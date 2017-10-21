@@ -11,10 +11,17 @@ public class Player : MonoBehaviour {
 	public Collider2D groundCheck;
 	public Collider2D attackCollider;
 
+	//Stats
+	private int health = 5;
+	private int damage = 1;
+	Vector2 origScale;
+	private bool takingDamage = false;
+
 	// Use this for initialization
 	void Start () {
 		body = GetComponent<Rigidbody2D> ();
 		anim = GetComponent<Animator> ();
+		origScale = transform.localScale;
 	}
 	
 	// Update is called once per frame
@@ -42,6 +49,8 @@ public class Player : MonoBehaviour {
 
 	void Move(float x) {
 		body.AddForce(new Vector2(x * speed, 0), ForceMode2D.Impulse);
+		if(x != 0)
+			transform.localScale = x > 0 ? origScale : new Vector2 (-origScale.x, origScale.y);
 	}
 
 	void Jump() {
@@ -57,8 +66,30 @@ public class Player : MonoBehaviour {
 		attackCollider.OverlapCollider (new ContactFilter2D (), results);
 		for (int i = 0; i < results.Length; i++) {
 			if (results [i] != null) {
-				Debug.Log (results [i].gameObject.name);
+				if (results [i].tag == "Enemy") {
+					Debug.Log (results [i].gameObject.name);
+					NPC enemy = results [i].GetComponent<NPC> ();
+					if (!enemy.takingDamage) {
+						enemy.TakeDamage (damage, transform.position);
+					}
+				}
 			}
+		}
+	}
+
+	public void TakeDamage (int amount) {
+		health -= amount;
+		StartCoroutine (_TakeDamage ());
+	}
+
+	IEnumerator _TakeDamage() {
+		takingDamage = true;
+		if (health < 1) {
+			yield return new WaitForSeconds (1.0f);
+			Destroy (gameObject);
+		} else {
+			yield return new WaitForSeconds (1.0f);
+			takingDamage = false;
 		}
 	}
 }

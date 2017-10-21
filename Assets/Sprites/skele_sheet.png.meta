@@ -1,0 +1,450 @@
+fileFormatVersion: 2
+guid: cdcd5c031ed1f4007a438f15642df40d
+timeCreated: 1508627285
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: skele_sheet_0
+    21300002: skele_sheet_1
+    21300004: skele_sheet_2
+    21300006: skele_sheet_3
+    21300008: skele_sheet_4
+    21300010: skele_sheet_5
+    21300012: skele_sheet_6
+    21300014: skele_sheet_7
+    21300016: skele_sheet_8
+    21300018: skele_sheet_9
+    21300020: skele_sheet_10
+    21300022: skele_sheet_11
+    21300024: skele_sheet_12
+    21300026: skele_sheet_13
+    21300028: skele_sheet_14
+    21300030: skele_sheet_15
+    21300032: skele_sheet_16
+    21300034: skele_sheet_17
+    21300036: skele_sheet_18
+    21300038: skele_sheet_19
+    21300040: skele_sheet_20
+    21300042: skele_sheet_21
+    21300044: skele_sheet_22
+    21300046: skele_sheet_23
+    21300048: skele_sheet_24
+    21300050: skele_sheet_25
+    21300052: skele_sheet_26
+    21300054: skele_sheet_27
+    21300056: skele_sheet_28
+    21300058: skele_sheet_29
+    21300060: skele_sheet_30
+    21300062: skele_sheet_31
+    21300064: skele_sheet_32
+    21300066: skele_sheet_33
+    21300068: skele_sheet_34
+    21300070: skele_sheet_35
+    21300072: skele_sheet_36
+    21300074: skele_sheet_37
+    21300076: skele_sheet_38
+    21300078: skele_sheet_39
+    21300080: skele_sheet_40
+    21300082: skele_sheet_41
+    21300084: skele_sheet_42
+    21300086: skele_sheet_43
+    21300088: skele_sheet_44
+    21300090: skele_sheet_45
+    21300092: skele_sheet_46
+    21300094: skele_sheet_47
+    21300096: skele_sheet_48
+    21300098: skele_sheet_49
+    21300100: skele_sheet_50
+    21300102: skele_sheet_51
+    21300104: skele_sheet_52
+    21300106: skele_sheet_53
+    21300108: skele_sheet_54
+    21300110: skele_sheet_55
+    21300112: skele_sheet_56
+    21300114: skele_sheet_57
+    21300116: spooky_boy_gloves
+    21300118: skele_sheet_59
+    21300120: skele_sheet_60
+    21300122: skele_sheet_61
+    21300124: skele_sheet_62
+    21300126: skele_sheet_63
+    21300128: skele_sheet_64
+    21300130: skele_sheet_65
+    21300132: skele_sheet_66
+  serializedVersion: 4
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: -1
+    aniso: -1
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 0
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 220
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  platformSettings:
+  - buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+  - buildTarget: Standalone
+    maxTextureSize: 2048
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+  - buildTarget: iPhone
+    maxTextureSize: 2048
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: skele_sheet_0
+      rect:
+        serializedVersion: 2
+        x: 14
+        y: 549
+        width: 91
+        height: 84
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: skele_sheet_1
+      rect:
+        serializedVersion: 2
+        x: 126
+        y: 549
+        width: 91
+        height: 84
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: skele_sheet_4
+      rect:
+        serializedVersion: 2
+        x: 406
+        y: 535
+        width: 14
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: skele_sheet_5
+      rect:
+        serializedVersion: 2
+        x: 14
+        y: 451
+        width: 91
+        height: 84
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: skele_sheet_6
+      rect:
+        serializedVersion: 2
+        x: 126
+        y: 451
+        width: 91
+        height: 84
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: skele_sheet_17
+      rect:
+        serializedVersion: 2
+        x: 385
+        y: 479
+        width: 14
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: skele_sheet_19
+      rect:
+        serializedVersion: 2
+        x: 427
+        y: 479
+        width: 14
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: skele_sheet_22
+      rect:
+        serializedVersion: 2
+        x: 574
+        y: 458
+        width: 14
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: skele_sheet_24
+      rect:
+        serializedVersion: 2
+        x: 616
+        y: 458
+        width: 14
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: skele_sheet_28
+      rect:
+        serializedVersion: 2
+        x: 455
+        y: 430
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: skele_sheet_30
+      rect:
+        serializedVersion: 2
+        x: 14
+        y: 353
+        width: 91
+        height: 84
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: skele_sheet_31
+      rect:
+        serializedVersion: 2
+        x: 126
+        y: 353
+        width: 91
+        height: 84
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: skele_sheet_37
+      rect:
+        serializedVersion: 2
+        x: 434
+        y: 346
+        width: 21
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: skele_sheet_41
+      rect:
+        serializedVersion: 2
+        x: 847
+        y: 143
+        width: 126
+        height: 98
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: skele_sheet_42
+      rect:
+        serializedVersion: 2
+        x: 406
+        y: 213
+        width: 14
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: skele_sheet_48
+      rect:
+        serializedVersion: 2
+        x: 385
+        y: 157
+        width: 14
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: skele_sheet_50
+      rect:
+        serializedVersion: 2
+        x: 427
+        y: 157
+        width: 14
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: skele_sheet_54
+      rect:
+        serializedVersion: 2
+        x: 672
+        y: 52
+        width: 28
+        height: 56
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: skele_sheet_55
+      rect:
+        serializedVersion: 2
+        x: 721
+        y: 52
+        width: 28
+        height: 56
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: skele_sheet_57
+      rect:
+        serializedVersion: 2
+        x: 434
+        y: 24
+        width: 21
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: spooky_boy_gloves
+      rect:
+        serializedVersion: 2
+        x: 357
+        y: 24
+        width: 112
+        height: 287
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: skele_sheet_2
+      rect:
+        serializedVersion: 2
+        x: 357
+        y: 346
+        width: 114
+        height: 287
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: skele_sheet_3
+      rect:
+        serializedVersion: 2
+        x: 511
+        y: 346
+        width: 189
+        height: 266
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
