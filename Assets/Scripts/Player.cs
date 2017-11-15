@@ -4,7 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class Player : MonoBehaviour {
-	CharacterController2D controller;
+    Inventory inventory;
+	UnityStandardAssets._2D.PlatformerCharacter2D controller;
+    Rigidbody2D body;
 	Animator anim;
 
     private float gravity = 1;
@@ -24,13 +26,16 @@ public class Player : MonoBehaviour {
     private AudioSource source;
 
     public Text coinCounter;
+    public GameObject potionPrefab;
 
     // Use this for initialization
     void Start () {
+        body = GetComponent<Rigidbody2D>();
         source = GetComponent<AudioSource>();
-		controller = GetComponent<CharacterController2D> ();
+		controller = GetComponent<UnityStandardAssets._2D.PlatformerCharacter2D> ();
 		anim = GetComponent<Animator> ();
 		origScale = transform.localScale;
+        potionPrefab = Resources.Load("Potion") as GameObject;
 	}
 	
 	// Update is called once per frame
@@ -38,6 +43,11 @@ public class Player : MonoBehaviour {
 		if (Grounded() && Input.GetKeyDown (KeyCode.W)) {
 			Jump ();
 		}
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            ThrowPotion();
+        }
 
         float x = Input.GetAxis("Horizontal");
         //Move(x);
@@ -68,7 +78,6 @@ public class Player : MonoBehaviour {
 			transform.localScale = x > 0 ? origScale : new Vector2 (-origScale.x, origScale.y);
 
         Debug.Log(moveDirection);
-        controller.move(moveDirection);
 	}
 
 	void Jump() {
@@ -80,6 +89,12 @@ public class Player : MonoBehaviour {
         if (punchSound != null) source.PlayOneShot(punchSound, 0.5f);
         anim.SetTrigger ("Attack");
 	}
+
+    void ThrowPotion()
+    {
+        GameObject thrownPotion = Instantiate(potionPrefab, transform.position, potionPrefab.transform.rotation);
+        thrownPotion.GetComponent<Potion>().Throw(body.velocity);
+    }
 
 	void CheckAttack() {
 		Collider2D[] results = new Collider2D[5];
@@ -96,7 +111,12 @@ public class Player : MonoBehaviour {
 		}
 	}
 
-    public void PickUpCoin()
+    public void PickUpCoin(Coin coin)
+    {
+
+    }
+
+    public void PickUp(Item item)
     {
 
     }

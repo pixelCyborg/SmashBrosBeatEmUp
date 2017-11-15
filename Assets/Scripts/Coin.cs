@@ -13,7 +13,7 @@ public class Coin : MonoBehaviour {
             if(player != null)
             {
                 if (coinSound != null) SoundEffects.PlaySFX(coinSound, 0.5f);
-                player.PickUpCoin();
+                player.PickUpCoin(this);
                 Destroy(gameObject);
             }
         }

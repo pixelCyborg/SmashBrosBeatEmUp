@@ -54,12 +54,9 @@ public class NPC : MonoBehaviour {
         if (health < 1)
         {
             body.constraints = RigidbodyConstraints2D.None;
-            body.AddTorque(Random.Range(-180, 180));
+            //body.AddTorque(Random.Range(-180, 180));
             yield return new WaitForSeconds(1.0f);
             Die(enemyPos);
-            yield return new WaitForSeconds(3.0f);
-            Destroy(GetComponent<Rigidbody2D>());
-            Destroy(this);
         }
         else {
             yield return new WaitForSeconds(1.0f);
@@ -80,6 +77,9 @@ public class NPC : MonoBehaviour {
             coinBody.AddForce(((Vector2)transform.position - (Vector2)enemyPos), ForceMode2D.Impulse);
             GetComponent<SpriteRenderer>().color = Color.grey;
             GetComponentInChildren<ParticleSystem>().Play();
+            Destroy(GetComponent<Collider2D>());
+            Destroy(GetComponent<Rigidbody2D>());
+            Destroy(this);
         }
     }
 }
