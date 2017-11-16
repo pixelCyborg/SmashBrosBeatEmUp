@@ -14,7 +14,6 @@ public class Player : MonoBehaviour {
 	public float jumpForce = 100.0f;
     private Vector2 moveDirection;
 	public Collider2D groundCheck;
-	public Collider2D attackCollider;
 
 	//Stats
 	private int health = 5;
@@ -27,6 +26,8 @@ public class Player : MonoBehaviour {
 
     public Text coinCounter;
     public GameObject potionPrefab;
+    public GameObject backpack;
+
 
     // Use this for initialization
     void Start () {
@@ -34,6 +35,7 @@ public class Player : MonoBehaviour {
         source = GetComponent<AudioSource>();
 		controller = GetComponent<UnityStandardAssets._2D.PlatformerCharacter2D> ();
 		anim = GetComponent<Animator> ();
+        inventory = Inventory.instance;
 		origScale = transform.localScale;
         potionPrefab = Resources.Load("Potion") as GameObject;
 	}
@@ -50,15 +52,6 @@ public class Player : MonoBehaviour {
         }
 
         float x = Input.GetAxis("Horizontal");
-        //Move(x);
-
-        if (Input.GetKeyDown (KeyCode.Space)) {
-			Attack ();
-		}
-
-		if (isAttacking && attackCollider != null) {
-			CheckAttack ();
-		}
 	}
 
     bool Grounded()
@@ -81,13 +74,7 @@ public class Player : MonoBehaviour {
 	}
 
 	void Jump() {
-        Debug.Log("Jump!");
         moveDirection.y = -jumpForce;
-	}
-
-	void Attack() {
-        if (punchSound != null) source.PlayOneShot(punchSound, 0.5f);
-        anim.SetTrigger ("Attack");
 	}
 
     void ThrowPotion()
@@ -96,21 +83,6 @@ public class Player : MonoBehaviour {
         thrownPotion.GetComponent<Potion>().Throw(body.velocity);
     }
 
-	void CheckAttack() {
-		Collider2D[] results = new Collider2D[5];
-		attackCollider.OverlapCollider (new ContactFilter2D (), results);
-		for (int i = 0; i < results.Length; i++) {
-			if (results [i] != null) {
-				if (results [i].tag == "Enemy") {
-					NPC enemy = results [i].GetComponent<NPC> ();
-					if (!enemy.takingDamage) {
-						enemy.TakeDamage (damage, transform.position);
-					}
-				}
-			}
-		}
-	}
-
     public void PickUpCoin(Coin coin)
     {
 
@@ -118,7 +90,10 @@ public class Player : MonoBehaviour {
 
     public void PickUp(Item item)
     {
-
+        inventory.AddToInventory(item);
+        item.transform.SetParent(backpack.transform);
+        item.transform.localPosition = Vector2.zero;
+        item.gameObject.SetActive(false);
     }
 
 	public void TakeDamage (int amount) {

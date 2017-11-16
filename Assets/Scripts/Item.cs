@@ -6,11 +6,16 @@ public class Item : MonoBehaviour{
     public string Id;
     public Sprite sprite;
     public string itemName;
+    public string description;
 
     void Start()
     {
         SpriteRenderer rend = GetComponent<SpriteRenderer>();
         if (rend != null) sprite = rend.sprite; 
+        if(string.IsNullOrEmpty(itemName))
+        {
+            itemName = gameObject.name;
+        }
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -21,7 +26,6 @@ public class Item : MonoBehaviour{
             if (player != null)
             {
                 player.PickUp(this);
-                Destroy(gameObject);
             }
         }
     }
