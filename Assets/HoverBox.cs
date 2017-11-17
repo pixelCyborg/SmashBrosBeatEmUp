@@ -28,10 +28,15 @@ public class HoverBox : MonoBehaviour {
     {
         if(group.alpha == 1)
         {
-            Vector2 pos;
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(myCanvas.transform as RectTransform, Input.mousePosition, myCanvas.worldCamera, out pos);
-            transform.position = myCanvas.transform.TransformPoint(pos) - new Vector3(rect.rect.width / 2, -rect.rect.height / 2, 0) * myCanvas.transform.localScale.x;
+            UpdateBoxPos();
         }
+    }
+
+    public void UpdateBoxPos()
+    {
+        Vector2 pos;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(myCanvas.transform as RectTransform, Input.mousePosition, myCanvas.worldCamera, out pos);
+        transform.position = myCanvas.transform.TransformPoint(pos) - new Vector3(rect.rect.width / 2, -rect.rect.height / 2, 0) * myCanvas.transform.localScale.x;
     }
 	
     public void ShowDescription(Item item)

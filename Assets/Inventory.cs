@@ -4,9 +4,15 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class Inventory : MonoBehaviour {
+    Canvas myCanvas;
     public static Inventory instance;
     RectTransform inventoryPanel;
     CanvasGroup group;
+
+    public static ItemTile hoveredTile;
+    private Item draggedItem;
+    private ItemTile origTile;
+    public Image itemCursor;
 
     public Transform hotbarParent;
     public Transform inventoryParent;
@@ -21,6 +27,8 @@ public class Inventory : MonoBehaviour {
 
     void Start()
     {
+        itemCursor.enabled = false;
+        myCanvas = GetComponentInParent<Canvas>();
         heldItems = new List<Item>();
         hotbarTiles = new ItemTile[hotbarParent.childCount];
         inventoryTiles = new ItemTile[inventoryParent.childCount];
@@ -52,6 +60,18 @@ public class Inventory : MonoBehaviour {
                 ToggleOff();
             }
         }
+
+        if(draggedItem != null)
+        {
+            Vector2 pos;
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(myCanvas.transform as RectTransform, Input.mousePosition, myCanvas.worldCamera, out pos);
+            itemCursor.transform.position = myCanvas.transform.TransformPoint(pos);
+
+            if (Input.GetMouseButtonUp(0))
+            {
+                EndItemDrag();
+            }
+        }
 	}
 
     public void AddToInventory(Item item)
@@ -74,6 +94,39 @@ public class Inventory : MonoBehaviour {
         }
 
         return null;
+    }
+
+    public void StartItemDrag(ItemTile itemTile)
+    {
+        HoverBox.instance.gameObject.SetActive(false);
+        itemCursor.enabled = true;
+        origTile = itemTile;
+        draggedItem = itemTile.item;
+        itemCursor.sprite = draggedItem.sprite;
+    }
+
+    void EndItemDrag()
+    {
+        if(hoveredTile != null)
+        {
+            if(hoveredTile.item != null)
+            {
+                origTile.SetItem(hoveredTile.item);
+                hoveredTile.SetItem(draggedItem);
+                HoverBox.instance.ShowDescription(draggedItem);
+            }
+            hoveredTile.SetItem(draggedItem);
+        }
+        else if(origTile != null)
+        {
+            origTile.SetItem(draggedItem);
+        }
+
+        itemCursor.enabled = false;
+        draggedItem = null;
+        origTile = null;
+        HoverBox.instance.gameObject.SetActive(true);
+        HoverBox.instance.UpdateBoxPos();
     }
 
     void ToggleOn() {
