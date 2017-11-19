@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class Inventory : MonoBehaviour {
-    Canvas myCanvas;
+    static Canvas myCanvas;
     public static Inventory instance;
     RectTransform inventoryPanel;
     CanvasGroup group;
@@ -117,6 +117,10 @@ public class Inventory : MonoBehaviour {
             }
             hoveredTile.SetItem(draggedItem);
         }
+        else if(Cauldron.instance.isHovering)
+        {
+            Cauldron.instance.AddItemToBrew(draggedItem);
+        }
         else if(origTile != null)
         {
             origTile.SetItem(draggedItem);
@@ -140,5 +144,12 @@ public class Inventory : MonoBehaviour {
         group.alpha = 0;
         group.interactable = false;
         group.blocksRaycasts = false;
+    }
+
+    public static Vector2 MouseToUiPos()
+    {
+        Vector2 pos;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(myCanvas.transform as RectTransform, Input.mousePosition, myCanvas.worldCamera, out pos);
+        return myCanvas.transform.TransformPoint(pos);
     }
 }
