@@ -3,6 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Potion : MonoBehaviour {
+	public enum Properties {
+		Bouncy,
+		//Makes Potions ricochet
+		//Can make surfaces bouncy
+		Impact, 
+		//Will apply extra force to characters hit by the blast
+		//Can be used for a double jump
+		Puddle
+		//Creates a surface of whatever element the potion is
+	}
+
+	public enum Elements {
+		//Damage over time
+		Fire,
+		//Freezes/Slows Enemis
+		//Slippery surfaces(?)
+		Ice, 
+		//Heals living, damages undead
+		Holy
+	}
+
     Rigidbody2D body;
     public float throwForce = 1.0f;
     public float blastRadius = 1.0f;

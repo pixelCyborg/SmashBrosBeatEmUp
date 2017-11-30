@@ -21,7 +21,7 @@ public class Cauldron : MonoBehaviour {
     }
 
     public void EndHover()
-    {
+	{
         isHovering = false;
     }
 

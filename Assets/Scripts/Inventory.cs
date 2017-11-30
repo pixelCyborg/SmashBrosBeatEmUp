@@ -98,12 +98,16 @@ public class Inventory : MonoBehaviour {
 
     public void StartItemDrag(ItemTile itemTile)
     {
-        HoverBox.instance.gameObject.SetActive(false);
-        itemCursor.enabled = true;
         origTile = itemTile;
-        draggedItem = itemTile.item;
-        itemCursor.sprite = draggedItem.sprite;
+		StartItemDrag (itemTile.item);
     }
+
+	public void StartItemDrag(Item _item) {
+		HoverBox.instance.gameObject.SetActive(false);
+		itemCursor.enabled = true;
+		draggedItem = _item;
+		itemCursor.sprite = draggedItem.sprite;
+	}
 
     void EndItemDrag()
     {
@@ -119,6 +123,7 @@ public class Inventory : MonoBehaviour {
         }
         else if(Cauldron.instance.isHovering)
         {
+			HoverBox.instance.HideDescription ();
             Cauldron.instance.AddItemToBrew(draggedItem);
         }
         else if(origTile != null)

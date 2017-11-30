@@ -11,4 +11,9 @@ public class CauldronItem : MonoBehaviour {
         item = _item;
         GetComponent<Image>().sprite = item.sprite;
     }
+
+	public void StartDrag() {
+		Inventory.instance.StartItemDrag (item);
+		Destroy (gameObject);
+	}
 }
