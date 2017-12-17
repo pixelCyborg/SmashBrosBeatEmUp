@@ -14,6 +14,7 @@ public class CauldronItem : MonoBehaviour {
 
 	public void StartDrag() {
 		Inventory.instance.StartItemDrag (item);
+        Cauldron.instance.RemoveFromBrew(this);
 		Destroy (gameObject);
 	}
 }

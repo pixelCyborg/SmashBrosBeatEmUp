@@ -5,12 +5,14 @@ using UnityEngine.UI;
 
 public class ItemTile : MonoBehaviour {
     public Item item;
+
     public Image rend;
     private Image background;
     private Color origColor;
 
     void Start()
     {
+        item = null;
         background = GetComponent<Image>();
         origColor = background.color;
     }
@@ -37,10 +39,10 @@ public class ItemTile : MonoBehaviour {
 
     public void OnHoverStart()
     {
-        background.color = Color.white;
+        Highlight();
         Inventory.hoveredTile = this;
-       
-        if(item != null)
+
+        if (item != null)
         {
             HoverBox.instance.ShowDescription(item);
         }
@@ -48,11 +50,21 @@ public class ItemTile : MonoBehaviour {
 
     public void OnHoverEnd()
     {
-        background.color = origColor;
         Inventory.hoveredTile = null;
+        Unhighlight();
         if(item != null)
         {
             HoverBox.instance.HideDescription();
         }
+    }
+
+    public void Highlight()
+    {
+        background.color = Color.white;
+    }
+
+    public void Unhighlight()
+    {
+        background.color = origColor;
     }
 }

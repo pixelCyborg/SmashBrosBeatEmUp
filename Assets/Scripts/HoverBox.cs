@@ -41,7 +41,7 @@ public class HoverBox : MonoBehaviour {
 	
     public void ShowDescription(Item item)
     {
-        itemName.text = item.name;
+        itemName.text = item.itemName;
         itemDescription.text = item.description;
 
         group.alpha = 1;

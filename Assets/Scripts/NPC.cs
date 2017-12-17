@@ -8,6 +8,7 @@ public class NPC : MonoBehaviour {
 	public bool takingDamage { get; private set; }
 	private SpriteRenderer sprite;
 	private Color origColor;
+    private Healthbar healthbar;
 
 	Rigidbody2D body;
 	private bool facingRight = true;
@@ -20,6 +21,8 @@ public class NPC : MonoBehaviour {
 		body = GetComponent<Rigidbody2D> ();	
 		sprite = GetComponent<SpriteRenderer> ();
 		origColor = sprite.color;
+        healthbar = GetComponentInChildren<Healthbar>();
+
         if (coinPrefab == null)
         {
             coinPrefab = Resources.Load("Coin") as GameObject;
@@ -43,6 +46,7 @@ public class NPC : MonoBehaviour {
 
 	public void TakeDamage(int damage, Vector2 enemyPos) {
 		health -= damage;
+        healthbar.SetLifeCount(health);
 		body.AddForce (((Vector2)transform.position - (Vector2)enemyPos) * 15 * damage, ForceMode2D.Impulse);
 		StartCoroutine (_TakeDamage (damage, enemyPos));
 	}

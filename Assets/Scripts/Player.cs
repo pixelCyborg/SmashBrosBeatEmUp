@@ -27,7 +27,7 @@ public class Player : MonoBehaviour {
     public Text coinCounter;
     public GameObject potionPrefab;
     public GameObject backpack;
-
+    private Hotbar hotbar;
 
     // Use this for initialization
     void Start () {
@@ -36,16 +36,13 @@ public class Player : MonoBehaviour {
 		controller = GetComponent<UnityStandardAssets._2D.PlatformerCharacter2D> ();
 		anim = GetComponent<Animator> ();
         inventory = Inventory.instance;
+        hotbar = inventory.transform.parent.GetComponentInChildren<Hotbar>();
 		origScale = transform.localScale;
         potionPrefab = Resources.Load("Potion") as GameObject;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if (Grounded() && Input.GetKeyDown (KeyCode.W)) {
-			Jump ();
-		}
-
         if (Input.GetMouseButtonDown(0))
         {
             ThrowPotion();
@@ -60,27 +57,24 @@ public class Player : MonoBehaviour {
         return groundCheck.OverlapCollider(new ContactFilter2D(), results) > 0;
     }
 
-    void Move(float x) {
-        if (controller == null) return;
-        //body.velocity = movement;
-        moveDirection.x = -x * speed;
-
-        moveDirection.y *= gravity * Time.deltaTime;
-
-		if(x != 0)
-			transform.localScale = x > 0 ? origScale : new Vector2 (-origScale.x, origScale.y);
-
-        Debug.Log(moveDirection);
-	}
-
-	void Jump() {
-        moveDirection.y = -jumpForce;
-	}
-
     void ThrowPotion()
     {
-        GameObject thrownPotion = Instantiate(potionPrefab, transform.position, potionPrefab.transform.rotation);
-        thrownPotion.GetComponent<Potion>().Throw(body.velocity);
+        ItemTile tile = hotbar.CurrentTile();
+        Potion potionBlock = null;
+        if (tile.item != null && tile.item.potion != null)
+        {
+            Debug.Log("Tile contains a potion!");
+            potionBlock = tile.item.potion;
+        }
+        else
+        {
+            return;
+        }
+
+        Projectile thrownPotion = Instantiate(potionPrefab, transform.position, potionPrefab.transform.rotation).GetComponent<Projectile>();
+        thrownPotion.GetComponent<SpriteRenderer>().sprite = tile.item.sprite;
+        thrownPotion.potion = potionBlock;
+        thrownPotion.Throw(body.velocity);
     }
 
     public void PickUpCoin(Coin coin)
@@ -88,12 +82,17 @@ public class Player : MonoBehaviour {
 
     }
 
+    public void PickUp(Collectable collectable)
+    {
+        PickUp(collectable.item);
+        collectable.transform.SetParent(backpack.transform);
+        collectable.transform.localPosition = Vector2.zero;
+        collectable.gameObject.SetActive(false);
+    }
+
     public void PickUp(Item item)
     {
         inventory.AddToInventory(item);
-        item.transform.SetParent(backpack.transform);
-        item.transform.localPosition = Vector2.zero;
-        item.gameObject.SetActive(false);
     }
 
 	public void TakeDamage (int amount) {

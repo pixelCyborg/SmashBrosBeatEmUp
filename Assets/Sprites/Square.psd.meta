@@ -1,13 +1,9 @@
 fileFormatVersion: 2
-guid: 0887131748af4c145afa5d07b312ec3b
-timeCreated: 1512555697
+guid: 2086be39aa796c24197e88efd5f7ef35
+timeCreated: 1512465357
 licenseType: Pro
 TextureImporter:
-  fileIDToRecycleName:
-    21300000: quick_ingredients_test_0
-    21300002: quick_ingredients_test_1
-    21300004: quick_ingredients_test_2
-    21300006: quick_ingredients_test_3
+  fileIDToRecycleName: {}
   externalObjects: {}
   serializedVersion: 4
   mipmaps:
@@ -44,13 +40,13 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
-  spritePixelsToUnits: 250
+  spritePixelsToUnits: 2
   alphaUsage: 1
   alphaIsTransparency: 1
   spriteTessellationDetail: -1
@@ -89,63 +85,7 @@ TextureImporter:
     overridden: 0
   spriteSheet:
     serializedVersion: 2
-    sprites:
-    - serializedVersion: 2
-      name: quick_ingredients_test_0
-      rect:
-        serializedVersion: 2
-        x: 59
-        y: 25
-        width: 40
-        height: 120
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: quick_ingredients_test_1
-      rect:
-        serializedVersion: 2
-        x: 171
-        y: 25
-        width: 104
-        height: 120
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: quick_ingredients_test_2
-      rect:
-        serializedVersion: 2
-        x: 315
-        y: 25
-        width: 104
-        height: 120
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: quick_ingredients_test_3
-      rect:
-        serializedVersion: 2
-        x: 483
-        y: 26
-        width: 56
-        height: 119
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
+    sprites: []
     outline: []
     physicsShape: []
   spritePackingTag: 

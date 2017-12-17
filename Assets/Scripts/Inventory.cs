@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class Inventory : MonoBehaviour {
     static Canvas myCanvas;
+    Hotbar hotbar;
     public static Inventory instance;
     RectTransform inventoryPanel;
     CanvasGroup group;
@@ -43,6 +44,7 @@ public class Inventory : MonoBehaviour {
             inventoryTiles[i] = inventoryParent.GetChild(i).GetComponent<ItemTile>();
         }
 
+        hotbar = transform.parent.GetComponentInChildren<Hotbar>();
         group = GetComponent<CanvasGroup>();
         inventoryPanel = transform.GetChild(0).GetComponent<RectTransform>();
         ToggleOff();
@@ -79,9 +81,10 @@ public class Inventory : MonoBehaviour {
         heldItems.Add(item);
         ItemTile tile = FirstAvailableTile(item);
         tile.SetItem(item);
+        hotbar.UpdateHotbar();
     }
 
-    ItemTile FirstAvailableTile(Item item)
+    public ItemTile FirstAvailableTile(Item item)
     {
         for(int i = 0; i < hotbarTiles.Length; i++)
         {
@@ -103,6 +106,7 @@ public class Inventory : MonoBehaviour {
     }
 
 	public void StartItemDrag(Item _item) {
+        if (_item == null) return;
 		HoverBox.instance.gameObject.SetActive(false);
 		itemCursor.enabled = true;
 		draggedItem = _item;
@@ -118,7 +122,7 @@ public class Inventory : MonoBehaviour {
                 origTile.SetItem(hoveredTile.item);
                 hoveredTile.SetItem(draggedItem);
                 HoverBox.instance.ShowDescription(draggedItem);
-            }
+            } 
             hoveredTile.SetItem(draggedItem);
         }
         else if(Cauldron.instance.isHovering)
@@ -136,6 +140,7 @@ public class Inventory : MonoBehaviour {
         origTile = null;
         HoverBox.instance.gameObject.SetActive(true);
         HoverBox.instance.UpdateBoxPos();
+        hotbar.UpdateHotbar();
     }
 
     void ToggleOn() {

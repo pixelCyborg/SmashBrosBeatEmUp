@@ -2,31 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Item : MonoBehaviour{
+[System.Serializable]
+public class Item {
     public string Id;
-    public Sprite sprite;
     public string itemName;
     public string description;
-
-    void Start()
-    {
-        SpriteRenderer rend = GetComponent<SpriteRenderer>();
-        if (rend != null) sprite = rend.sprite; 
-        if(string.IsNullOrEmpty(itemName))
-        {
-            itemName = gameObject.name;
-        }
-    }
-
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.gameObject.tag == "Player")
-        {
-            Player player = other.gameObject.GetComponentInParent<Player>();
-            if (player != null)
-            {
-                player.PickUp(this);
-            }
-        }
-    }
+    public Sprite sprite;
+    public List<Property> properties = new List<Property>();
+    public Potion potion = null;
 }
