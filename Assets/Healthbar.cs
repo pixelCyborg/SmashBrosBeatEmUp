@@ -33,7 +33,7 @@ public class Healthbar : MonoBehaviour {
         for(int i = 0; i < lives.Count; i++)
         {
             float middle = (float)currentHealth / 2;
-            lives[i].transform.localPosition = new Vector3(0.5f * (i - middle) + (maxHealth % 2 == 0 ? 0 : 0.25f), 1.2f, 0);
+            lives[i].transform.localPosition = new Vector3(0.5f * (i - middle) + (0.25f), 1.2f, 0);
         }
     }
 
