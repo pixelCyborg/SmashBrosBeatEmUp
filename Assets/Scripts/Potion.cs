@@ -14,6 +14,20 @@ public class Potion {
         properties = new Property[0];
     }
 
+	public void ApplyStatus(NPC npc) {
+		for (int i = 0; i < properties.Length; i++) {
+			switch (properties [i].type) {
+			case Property.Type.Fire:
+				npc.gameObject.AddComponent<Burning> ();
+				break;
+
+			case Property.Type.Ice:
+				npc.gameObject.AddComponent<Frozen> ();
+				break;
+			}
+		}
+	}
+
     public void SetStats(Potion stats)
     {
         if (stats == null) return;

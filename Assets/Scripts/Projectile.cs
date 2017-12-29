@@ -17,25 +17,28 @@ public class Projectile : MonoBehaviour {
     }
 
     void OnCollisionEnter2D(Collision2D col)
-    {
-        if (CheckForProperty(Property.Type.Bouncy) > bounces)
-        {
-            Debug.Log("Bounce!");
-            Bounce(col);
-        }
-        else {
-            Explode();
-        }
-    }
+	{
+		if (col.gameObject.layer == 1 << LayerMask.NameToLayer ("Enemy")) {
+			Explode ();
+		}
+
+		if (CheckForProperty (Property.Type.Bouncy) > bounces) {
+			Bounce (col);
+		} else {
+			Explode ();
+		}
+	}
 
     public void Throw(Vector2 playerVel)
-    {
-        if (potion == null) potion = new Potion();
-        if (body == null) body = GetComponent<Rigidbody2D>();
-        Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        body.AddTorque(Random.Range(-50, 50));
-        body.AddForce(((mouseWorldPos - (Vector2)transform.position).normalized) * potion.throwForce, ForceMode2D.Impulse);
-    }
+	{
+		if (potion == null)
+			potion = new Potion ();
+		if (body == null)
+			body = GetComponent<Rigidbody2D> ();
+		Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
+		body.AddTorque (Random.Range (-50, 50));
+		body.AddForce (((mouseWorldPos - (Vector2)transform.position).normalized) * potion.throwForce, ForceMode2D.Impulse);
+	}
 
 
     void Explode()
@@ -45,12 +48,13 @@ public class Projectile : MonoBehaviour {
 
     void ExplosionDamage()
     {
-        Collider2D[] collisions = Physics2D.OverlapCircleAll(transform.position, potion.blastRadius, 1 << LayerMask.NameToLayer("Enemy"));
+		Collider2D[] collisions = Physics2D.OverlapCircleAll(transform.position, potion.blastRadius, 1 << LayerMask.NameToLayer("Enemy"));
         for (int i = 0; i < collisions.Length; i++)
         {
             NPC enemy = collisions[i].GetComponent<NPC>();
             if (enemy != null)
             {
+				potion.ApplyStatus (enemy);
                 enemy.TakeDamage((int)potion.damage, transform.position);
                 //enemy.GetComponent<Rigidbody2D>().AddForce();
             }

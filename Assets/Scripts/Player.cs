@@ -16,7 +16,11 @@ public class Player : MonoBehaviour {
 	public Collider2D groundCheck;
 
 	//Stats
-	private int health = 5;
+	private static int health = 5;
+	public static int Health {
+		get { return health; }
+		set { health = value; }
+	}
 	private int damage = 1;
 	Vector2 origScale;
 	private bool takingDamage = false;

@@ -17,6 +17,7 @@ public class Inventory : MonoBehaviour {
 
     public Transform hotbarParent;
     public Transform inventoryParent;
+
     ItemTile[] hotbarTiles;
     ItemTile[] inventoryTiles;
     List<Item> heldItems;
@@ -155,6 +156,33 @@ public class Inventory : MonoBehaviour {
         group.interactable = false;
         group.blocksRaycasts = false;
     }
+
+	public Item[] GetInventoryItems() {
+		Item[] items = new Item[inventoryTiles.Length];
+		for (int i = 0; i < items.Length; i++) {
+			items [i] = inventoryTiles [i].item;
+		}
+
+		return items;
+	}
+
+	public Item[] GetHotbarItems() {
+		Item[] items = new Item[hotbarTiles.Length];
+		for (int i = 0; i < items.Length; i++) {
+			items [i] = hotbarTiles [i].item;
+		}
+
+		return items;
+	}
+
+	public void PopulateInventory(Item[] inventoryItems, Item[] hotbarItems) {
+		for (int i = 0; i < inventoryItems.Length; i++) {
+			inventoryTiles [i].SetItem(inventoryItems[i]);
+		}
+		for (int i = 0; i < hotbarItems.Length; i++) {
+			hotbarTiles[i].SetItem(hotbarItems[i]);
+		}
+	}
 
     public static Vector2 MouseToUiPos()
     {
