@@ -18,6 +18,16 @@ public class Projectile : MonoBehaviour {
 
     void OnCollisionEnter2D(Collision2D col)
 	{
+        if (CheckForProperty(Property.Type.Impact) > 0)
+        {
+            EffectDestructibles(col);
+        }
+
+        if(CheckForProperty(Property.Type.Bouncy) > 0)
+        {
+            AddBounceTiles(col);
+        }
+
 		if (col.gameObject.layer == 1 << LayerMask.NameToLayer ("Enemy")) {
 			Explode ();
 		}
@@ -46,9 +56,8 @@ public class Projectile : MonoBehaviour {
         StartCoroutine(_Explode());
     }
 
-    void ExplosionDamage()
+    void ExplosionDamage(Collider2D[] collisions)
     {
-		Collider2D[] collisions = Physics2D.OverlapCircleAll(transform.position, potion.blastRadius, 1 << LayerMask.NameToLayer("Enemy"));
         for (int i = 0; i < collisions.Length; i++)
         {
             NPC enemy = collisions[i].GetComponent<NPC>();
@@ -57,6 +66,42 @@ public class Projectile : MonoBehaviour {
 				potion.ApplyStatus (enemy);
                 enemy.TakeDamage((int)potion.damage, transform.position);
                 //enemy.GetComponent<Rigidbody2D>().AddForce();
+            }
+        }
+    }
+
+    Vector3[] GetTileWorldPositions(Collision2D collision)
+    {
+        Vector3[] collisionPoints = new Vector3[collision.contacts.Length];
+        for (int i = 0; i < collision.contacts.Length; i++)
+        {
+            ContactPoint2D hit = collision.contacts[i];
+            Vector3 hitPosition = Vector3.zero;
+            hitPosition.x = hit.point.x - 0.01f * hit.normal.x;
+            hitPosition.y = hit.point.y - 0.01f * hit.normal.y;
+            collisionPoints[i] = hitPosition;
+        }
+        return collisionPoints;
+    }
+
+    void AddBounceTiles(Collision2D collision)
+    {
+        Vector3[] collisions = GetTileWorldPositions(collision);
+        for(int i = 0; i < collisions.Length; i++)
+        {
+            Bouncy.instance.SetBouncy(collisions[i]);
+        }
+    }
+
+    void EffectDestructibles(Collision2D collision)
+    {
+        if (collision.gameObject.GetComponent<Destructibles>())
+        {
+            Destructibles destructibles = collision.gameObject.GetComponent<Destructibles>();
+            Vector3[] collisions = GetTileWorldPositions(collision);
+            for (int i = 0; i < collisions.Length; i++)
+            {
+                destructibles.DestroyTile(collisions[i]);
             }
         }
     }
@@ -83,7 +128,8 @@ public class Projectile : MonoBehaviour {
 
     IEnumerator _Explode()
     {
-        ExplosionDamage();
+        Collider2D[] collisions = Physics2D.OverlapCircleAll(transform.position, potion.blastRadius);
+        ExplosionDamage(collisions);
         GetComponent<ParticleSystem>().Play();
         body.constraints = RigidbodyConstraints2D.FreezeAll;
         body.isKinematic = true;

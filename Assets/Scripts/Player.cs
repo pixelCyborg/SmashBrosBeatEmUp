@@ -67,7 +67,6 @@ public class Player : MonoBehaviour {
         Potion potionBlock = null;
         if (tile.item != null && tile.item.potion != null)
         {
-            Debug.Log("Tile contains a potion!");
             potionBlock = tile.item.potion;
         }
         else
