@@ -14,7 +14,9 @@ public class NPC : MonoBehaviour {
 	private bool facingRight = true;
 	//Vector2 origScale;
 	public Collider2D floorCheck;
+    public Collider2D forwardCheck;
     private static GameObject coinPrefab;
+    public ContactFilter2D groundFilter;
 
 	// Use this for initialization
 	void Start () {
@@ -35,10 +37,10 @@ public class NPC : MonoBehaviour {
 			return;
 		}
 
-		body.AddRelativeForce(Vector2.right * walkSpeed * (facingRight ? 1 : -1), ForceMode2D.Impulse);
+		body.velocity = Vector2.right * walkSpeed * (facingRight ? 1 : -1);
 
-		Collider2D[] results = new Collider2D[3];
-		if (floorCheck.OverlapCollider (new ContactFilter2D (), results) == 0) {
+		Collider2D[] results = new Collider2D[3]; 
+		if (floorCheck.OverlapCollider (groundFilter, results) == 0 || forwardCheck.OverlapCollider(groundFilter, results) > 0) {
 			transform.localScale = new Vector2(-transform.localScale.x, transform.localScale.y);
 			facingRight = !facingRight;
 		}
@@ -71,19 +73,24 @@ public class NPC : MonoBehaviour {
 
     void Die(Vector2 enemyPos)
     {
-        int coins = Random.Range(1, 4);
-        for(int i = 0; i < coins; i++)
+        DropCoins(enemyPos);
+        GetComponent<SpriteRenderer>().color = Color.grey;
+        GetComponentInChildren<ParticleSystem>().Play();
+        Destroy(GetComponent<Collider2D>());
+        Destroy(GetComponent<Rigidbody2D>());
+        Destroy(this);
+    }
+
+    void DropCoins(Vector2 enemyPos)
+    {
+        int coins = Random.Range(5, 10);
+        for (int i = 0; i < coins; i++)
         {
             GameObject coin = Instantiate(coinPrefab, transform.position, coinPrefab.transform.rotation);
             Rigidbody2D coinBody = coin.GetComponent<Rigidbody2D>();
             enemyPos.x += Random.Range(0, 2);
             enemyPos.y += Random.Range(-1, -3);
             coinBody.AddForce(((Vector2)transform.position - (Vector2)enemyPos), ForceMode2D.Impulse);
-            GetComponent<SpriteRenderer>().color = Color.grey;
-            GetComponentInChildren<ParticleSystem>().Play();
-            Destroy(GetComponent<Collider2D>());
-            Destroy(GetComponent<Rigidbody2D>());
-            Destroy(this);
         }
     }
 }

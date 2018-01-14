@@ -23,9 +23,6 @@ public class Player : MonoBehaviour {
 	}
 	private int damage = 1;
 	Vector2 origScale;
-	private bool takingDamage = false;
-    public bool isAttacking;
-    public AudioClip punchSound;
     private AudioSource source;
 
     public Text coinCounter;
@@ -43,16 +40,6 @@ public class Player : MonoBehaviour {
         hotbar = inventory.transform.parent.GetComponentInChildren<Hotbar>();
 		origScale = transform.localScale;
         potionPrefab = Resources.Load("Potion") as GameObject;
-	}
-	
-	// Update is called once per frame
-	void Update () {
-        if (Input.GetMouseButtonDown(0))
-        {
-            ThrowPotion();
-        }
-
-        float x = Input.GetAxis("Horizontal");
 	}
 
     bool Grounded()
@@ -80,7 +67,7 @@ public class Player : MonoBehaviour {
         thrownPotion.Throw(body.velocity);
     }
 
-    public void PickUpCoin(Coin coin)
+    public void PickUp(Coin coin)
     {
 
     }
@@ -97,20 +84,4 @@ public class Player : MonoBehaviour {
     {
         inventory.AddToInventory(item);
     }
-
-	public void TakeDamage (int amount) {
-		health -= amount;
-		StartCoroutine (_TakeDamage ());
-	}
-
-	IEnumerator _TakeDamage() {
-		takingDamage = true;
-		if (health < 1) {
-			yield return new WaitForSeconds (1.0f);
-			Destroy (gameObject);
-		} else {
-			yield return new WaitForSeconds (1.0f);
-			takingDamage = false;
-		}
-	}
 }

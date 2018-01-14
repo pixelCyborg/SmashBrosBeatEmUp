@@ -71,7 +71,7 @@ public class Burning : StatusEffect {
 
 	public override void OnTick() {
 		if(player != null) {
-			player.TakeDamage ((int)power);
+			Player.Health -= (int)power;
 		}
 
 		if (npc != null) {

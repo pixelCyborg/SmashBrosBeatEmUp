@@ -9,14 +9,46 @@ using UnityEditor;
 #endif
 
 public class MapGenerator : MonoBehaviour {
+
+    /// <summary>
+    /// Tile Values
+    /// 
+    ///     0 ==> Empty
+    ///     1 ==> Ground
+    ///     2 ==> Platform
+    ///     3 ==> Ladder
+    /// 
+    /// </summary>
+
+    [Header("Tilemaps")]
     public Tilemap targetMap;
+    public Tilemap ladderMap;
+    public Tilemap platformMap;
+    public Tilemap backgroundMap;
+
+    [Header("Tile Prefabs")]
     public Tile fillTile;
     public Tile emptyTile;
+    public Tile ladderTile;
+    public Tile platformTile;
+    
+    [Header ("Room Colliders")]
+    public Transform roomParent;
+    public GameObject roomPrefab;
+
     int[,] map;
+    List<Ladder> ladders;
+
+    [Header("Map Generation Settings")]
     public int width = 32;
     public int height = 32;
     public string seed;
     public bool useRandomSeed;
+    private Room[] rooms;
+    public bool flattenRooms;
+
+    private const int MAX_JUMPABLE_HEIGHT = 3;
+    private const int MAX_JUMPABLE_GAP = 8;
 
     [Range(0, 100)]
     public int randomFillPercent = 40;
@@ -28,8 +60,17 @@ public class MapGenerator : MonoBehaviour {
     public int roomThreshold = 50;
     [Range(1, 5)]
     public int passageWidth = 1;
+    [Range(1, 10)]
+    public int wallHeight = 5;
 
-    struct Coord
+    [Range(1, 20)]
+    public int minLadderRange = 3;
+    [Range(5, 50)]
+    public int maxLadderRange = 25;
+    [Range(1, 50)]
+    public int ladderGroundThreshold = 20;
+
+    struct Coord : IEquatable<Coord>, IComparable<Coord>
     {
         public int x;
         public int y;
@@ -39,19 +80,39 @@ public class MapGenerator : MonoBehaviour {
             this.x = x;
             this.y = y;
         }
+
+        public bool Equals(Coord other)
+        {
+            return this.x == other.x && this.y == other.y;
+        }
+
+        public int CompareTo(Coord other)
+        {
+            return x.CompareTo(other.x);
+        }
+    }
+
+    struct Ladder : IComparable<Ladder>
+    {
+        public Coord[] tiles;
+        public int burrowCount;
+
+        public Ladder(Coord[] tiles, int burrowCount)
+        {
+            this.tiles = tiles;
+            this.burrowCount = burrowCount;
+        }
+
+        //Sort ladders from left to right
+        public int CompareTo(Ladder other)
+        {
+            return tiles[0].x.CompareTo(other.tiles[0].x);
+        }
     }
 
     private void Start()
     {
         GenerateMap();
-    }
-
-    void SetMapTile(int x, int y, int val)
-    {
-        map[x, y] = val;
-        targetMap.SetTile(new Vector3Int(x - width / 2,
-                                         y - height / 2,
-                                         0), val == 1 ? fillTile : null);
     }
 
     public void GenerateMap()
@@ -65,8 +126,233 @@ public class MapGenerator : MonoBehaviour {
         }
 
         ProcessMap();
+        FindLadders();
 
-        PaintMap();
+        PaintMapTiles();
+
+        PlacePlayerAtStart();
+    }
+
+    //Map Flags =========================
+    Coord BestStartPoint()
+    {
+        Coord startPoint;
+        int y = height - 1;
+        bool foundStartPoint = false;
+        List<Coord> possibleStarts = new List<Coord>();
+
+        //Find a space close to the top that
+        while (!foundStartPoint)
+        {
+            y--;
+            for (int x = 0; x < width - 1; x++)
+            {
+                if (map[x, y] == 0)
+                {
+                    if (HasRoom(x, y))
+                    {
+                        possibleStarts.Add(new Coord(x, y));
+                        foundStartPoint = true;
+                    }
+                }
+            }
+        }
+
+        startPoint = possibleStarts[UnityEngine.Random.Range(0, possibleStarts.Count - 1)];
+
+        //From that space draw downward until hitting ground
+        bool hitGround = false;
+        y = startPoint.y;
+        while(!hitGround)
+        {
+            if(map[startPoint.x, y] == 1)
+            {
+                hitGround = true;
+                startPoint.y = y + 2;
+            }
+            y--;
+        }
+
+        return startPoint;
+    }
+
+    bool IsOutOfBounds(int x, int y)
+    {
+        return x < 0 || x > width - 1 || y < 0 || y > height - 1;
+    }
+
+    bool IsFloorTile(int x, int y)
+    {
+        try
+        {
+            return map[x, y] == 1 && map[x, y + 1] != 1 && map[x, y + 2] != 1;
+        }
+        catch(Exception e)
+        {
+            return false;
+        }
+    }
+
+    /// Utility Methods
+    bool HasRoom(int centerX, int centerY)
+    {
+        for(int x = centerX - 1; x <= centerX + 1; x++)
+        {
+            for (int y = centerY + 1; y >= centerY - 1; y--)
+            {
+                if(map[x,y] != 0)
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    
+
+    void ClearSquare(Coord start, Coord finish)
+    {
+        if(finish.x < start.x)
+        {
+            int tempX = start.x;
+            start.x = finish.x;
+            finish.x = tempX;
+        }
+
+        if (finish.y < start.y)
+        {
+            int tempY = start.y;
+            start.y = finish.y;
+            finish.y = tempY;
+        }
+
+        for (int x = start.x; x < finish.x; x++) 
+        {
+            for(int y = start.y; y < finish.y; y++)
+            {
+                map[x, y] = 0;
+            }
+        }
+    }
+
+    //Search for ladder
+
+    //Checks to see if there is a wall 4 or more tiles high on the left or right of this tile
+    //If there is no wall, return Vector2.zero
+    //Otherwise, return the position of the tile above the wall relative to the tested tile
+    private Vector2 CheckWallHeight(int x, int y) {
+        //If there is a ground tile on either side, iterate upward until hitting a non-ground tile
+        //If we have iterated more than 4 times, there is a wall
+
+        //Check Left
+        if (!IsOutOfBounds(x - 1, y) && map[x - 1, y] == 1)
+        {
+            int index = 0;
+            while(map[x - 1, y + index] == 1)
+            {
+                index++;
+            }
+
+            if (index > MAX_JUMPABLE_HEIGHT) return new Vector2(x - 1, y + index);
+        }
+
+        //Check Right
+        if (!IsOutOfBounds(x + 1, y) && map[x + 1, y] == 1)
+        {
+            int index = 0;
+            while (map[x + 1, y + index] == 1)
+            {
+                index++;
+            }
+
+            if (index > MAX_JUMPABLE_HEIGHT) return new Vector2(x + 1, y + index);
+        } 
+
+        //If none of these are the case, either the wall is not tall enough or there is none. Either way return "false"
+        return Vector2.zero;
+    }
+
+    //If there is a chunk of ground that has empty space below it and above it, check to see if there should be a ladder there
+    //Measure from the ABOVE tile
+    private void MeasureLadder(int x, int y)
+    {
+        //Make sure the tile above this is open
+        if (IsOutOfBounds(x, y + 1) || map[x, y + 1] == 1) return;
+
+        List<Coord> ladderCoords = new List<Coord>();
+        ladderCoords.Add(new Coord(x, y));
+
+        int index = 1;
+        int burrowingDepth = 0;
+
+        while(!IsFloorTile(x, y - index))
+        {
+            if (IsOutOfBounds(x, y - index) || index > maxLadderRange) return;
+
+            ladderCoords.Add(new Coord(x, y - index));
+            if (map[x, y - index] == 1)
+            {
+                burrowingDepth++;
+            }
+
+            index++;
+        }
+
+        //If all conditions are satisfied, mark the coordinates to place ladders
+        if(index > minLadderRange)
+        {
+            ladders.Add(new Ladder(ladderCoords.ToArray(), burrowingDepth));
+        }
+    }
+
+    //Map Structure ============================================================
+    void PlacePlayerAtStart()
+    {
+        Coord startPoint = BestStartPoint();
+        Player player = FindObjectOfType<Player>();
+        if (player == null) return;
+
+        player.transform.position = CoordToWorldPoint(startPoint);
+    }
+
+    private void FindLadders()
+    {
+        ladders = new List<Ladder>();
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                if(IsFloorTile(x, y)) MeasureLadder(x, y);
+            }
+        }
+
+        List<Ladder> survivingLadders = new List<Ladder>();
+        List<Ladder> ladderGroup = new List<Ladder>();
+        ladders.Sort();
+        foreach (Ladder ladder in ladders)
+        {
+            //If the ladders are within the same vicinity, add them to the current ladder group (or if the ladder group is currently empty)
+            if (ladderGroup.Count == 0 || 
+                ladder.tiles[0].x - ladderGroup[ladderGroup.Count - 1].tiles[0].x < 3)
+            {
+                ladderGroup.Add(ladder);
+            }
+            //Otherwise, we should find the shortest ladder and start a new ladder group
+            else
+            {
+                ladderGroup.Sort(delegate (Ladder a, Ladder b)
+                {
+                    return a.burrowCount.CompareTo(b.burrowCount);
+                });
+
+                survivingLadders.Add(ladderGroup[0]);
+
+
+                ladderGroup = new List<Ladder>();
+            }
+        }
     }
 
     void SmoothMap()
@@ -174,7 +460,7 @@ public class MapGenerator : MonoBehaviour {
         survivingRooms.Sort();
         survivingRooms[0].isMainRoom = true;
         survivingRooms[0].isAccessibleFromMainRoom = true;
-
+        rooms = survivingRooms.ToArray();
         ConnectClosestRooms(survivingRooms);
     }
 
@@ -425,14 +711,113 @@ public class MapGenerator : MonoBehaviour {
         return x >= 0 && x < width && y >= 0 && y < height;
     }
 
-    void PaintMap()
+    void SetMapTile(int x, int y, int val)
     {
+        targetMap.SetTile(new Vector3Int(x - width / 2,
+                                         y - height / 2,
+                                         0), val == 1 ? fillTile : emptyTile);
+    }
+
+    void SetLadderTile(int x, int y)
+    {
+        ladderMap.SetTile(new Vector3Int(x - width / 2,
+                                         y - height / 2,
+                                         0), ladderTile);
+    }
+
+    void SetPlatformTile(int x, int y)
+    {
+        platformMap.SetTile(new Vector3Int(x - width / 2,
+                                         y - height / 2,
+                                         0), platformTile);
+    }
+
+    void PaintMapTiles()
+    {
+        targetMap.ClearAllTiles();
+        ladderMap.ClearAllTiles();
+        platformMap.ClearAllTiles();
+
+        //Paint regular tiles
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
             {
                 SetMapTile(x, y, map[x, y]);
             }
+        }
+
+        //Paint platform tiles
+
+        //Paint ladder tiles
+        for(int i = 0; i < ladders.Count; i++)
+        {
+            for (int c = 0; c < ladders[i].tiles.Length; c++)
+            {
+                SetLadderTile(ladders[i].tiles[c].x, ladders[i].tiles[c].y);
+            }
+        }
+
+        PaintRooms();
+    }
+
+    void PaintRooms()
+    {
+        //Color Rooms (DEBUG) ===============================
+        Color[] colors = new Color[]
+        {
+            Color.blue,
+            Color.red,
+            Color.green,
+            Color.yellow,
+            Color.cyan,
+            Color.green,
+            Color.grey,
+            Color.magenta,
+            Color.black
+        };
+        int colorIndex = 0;
+
+        //Destroy previous tiles
+        for(int i = roomParent.childCount - 1; i >= 0; i--)
+        {
+            DestroyImmediate(roomParent.GetChild(i).gameObject);
+        }
+
+        foreach (Room room in rooms)
+        {
+            //Set the rooms color
+            Color roomColor = colors[colorIndex];
+            colorIndex++;
+            if (colorIndex == colors.Length) colorIndex = 0;
+
+            int lowestX = room.tiles[0].x;
+            int highestX = room.tiles[0].x;
+            int lowestY = room.tiles[0].y;
+            int highestY = room.tiles[0].y;
+
+            foreach (Coord coord in room.tiles)
+            {
+                if (coord.x > highestX) highestX = coord.x;
+                if (coord.x < lowestX) lowestX = coord.x;
+                if (coord.y > highestY) highestY = coord.y;
+                if (coord.y < lowestY) lowestY = coord.y;
+
+                if (map[coord.x, coord.y] == 1) continue;
+                Vector3Int position = new Vector3Int(coord.x - width / 2, coord.y - height / 2, 0);
+                targetMap.SetColor(position, roomColor);
+                targetMap.SetTileFlags(position, TileFlags.LockColor);
+            }
+
+            Vector3 lowest = CoordToWorldPoint(new Coord(lowestX, lowestY));
+            Vector3 highest = CoordToWorldPoint(new Coord(highestX, highestY));
+            GameObject roomObject = Instantiate(roomPrefab, roomParent);
+
+            Vector3 roomCenter = (lowest + highest) / 2f;
+            float scaleX = Vector3.Distance(new Vector3(lowestX, 0, 0), new Vector3(highestX, 0, 0));
+            float scaleY = Vector3.Distance(new Vector3(0, lowestY, 0), new Vector3(0, highestY, 0));
+            roomObject.transform.position = roomCenter;
+            roomObject.transform.localScale = new Vector3(scaleX, scaleY, 0);
         }
     }
 

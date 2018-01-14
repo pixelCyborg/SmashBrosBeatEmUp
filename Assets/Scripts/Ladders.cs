@@ -4,28 +4,30 @@ using UnityEngine;
 using UnityStandardAssets._2D;
 
 public class Ladders : MonoBehaviour {
-    private void OnTriggerEnter2D(Collider2D collision)
+    bool isColliding;
+    PlatformerCharacter2D player;
+
+    private void Start()
     {
-        if(collision.tag == "Player")
+        player = FindObjectOfType<PlatformerCharacter2D>();
+    }
+
+    private void Update()
+    {
+        if (isColliding)
         {
-            PlatformerCharacter2D player = collision.GetComponent<PlatformerCharacter2D>();
-            if(player != null)
+            if (Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.S))
             {
-                player.isClimbing = true;
+                player.StartClimbing();
             }
         }
     }
-
 
     private void OnTriggerStay2D(Collider2D collision)
     {
         if (collision.tag == "Player")
         {
-            PlatformerCharacter2D player = collision.GetComponent<PlatformerCharacter2D>();
-            if (player != null)
-            {
-                player.isClimbing = true;
-            }
+            isColliding = true;
         }
     }
 
@@ -33,11 +35,8 @@ public class Ladders : MonoBehaviour {
     {
         if (collision.tag == "Player")
         {
-            PlatformerCharacter2D player = collision.GetComponent<PlatformerCharacter2D>();
-            if (player != null)
-            {
-                player.isClimbing = false;
-            }
+            isColliding = false;
+            if (player.isClimbing) player.StopClimbing();
         }
     }
 }
