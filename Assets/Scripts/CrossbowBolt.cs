@@ -32,7 +32,7 @@ public class CrossbowBolt : MonoBehaviour {
         if (collision.transform.tag == "Player") return;
         if (collision.transform.tag == "Enemy")
         {
-            NPC enemy = collision.gameObject.GetComponent<NPC>();
+            Enemy enemy = collision.gameObject.GetComponent<Enemy>();
             if(enemy != null)
             {
                 enemy.TakeDamage(damage, transform.position);

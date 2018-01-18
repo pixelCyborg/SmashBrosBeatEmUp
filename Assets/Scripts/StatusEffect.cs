@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class StatusEffect : MonoBehaviour {
 	internal Player player;
-	internal NPC npc;
+	internal Enemy npc;
 	internal float startTime;
 
 	internal SpriteRenderer sprite;
@@ -20,7 +20,7 @@ public abstract class StatusEffect : MonoBehaviour {
 
 	void Start() {
 		player = GetComponent<Player> ();
-		npc = GetComponent<NPC> ();
+		npc = GetComponent<Enemy> ();
 		StartCoroutine (_Tick ());
 
 		if (GetComponentInChildren<SpriteRenderer> () != null) {

@@ -14,7 +14,7 @@ public class Potion {
         properties = new Property[0];
     }
 
-	public void ApplyStatus(NPC npc) {
+	public void ApplyStatus(Enemy npc) {
 		for (int i = 0; i < properties.Length; i++) {
 			switch (properties [i].type) {
 			case Property.Type.Fire:

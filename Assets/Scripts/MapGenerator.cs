@@ -17,6 +17,7 @@ public class MapGenerator : MonoBehaviour {
     ///     1 ==> Ground
     ///     2 ==> Platform
     ///     3 ==> Ladder
+    ///     4 ==> Ladder Through Ground
     /// 
     /// </summary>
 
@@ -38,6 +39,7 @@ public class MapGenerator : MonoBehaviour {
 
     int[,] map;
     List<Ladder> ladders;
+    List<Platform> platforms;
 
     [Header("Map Generation Settings")]
     public int width = 32;
@@ -63,12 +65,21 @@ public class MapGenerator : MonoBehaviour {
     [Range(1, 10)]
     public int wallHeight = 5;
 
+    [Header("Ladder Parameters")]
     [Range(1, 20)]
     public int minLadderRange = 3;
     [Range(5, 50)]
     public int maxLadderRange = 25;
     [Range(1, 50)]
     public int ladderGroundThreshold = 20;
+
+    [Header("Platform Parameters")]
+    [Range(1, 10)]
+    public int minPlatformLength = 5;
+    [Range(1, 30)]
+    public int maxPlatformLength = 15;
+    [Range(0.0f, 1.0f)]
+    public float groundProximityRatio = 0.33f;
 
     struct Coord : IEquatable<Coord>, IComparable<Coord>
     {
@@ -106,9 +117,27 @@ public class MapGenerator : MonoBehaviour {
         //Sort ladders from left to right
         public int CompareTo(Ladder other)
         {
+            return tiles[0].y.CompareTo(other.tiles[0].y);
+        }
+    }
+
+    struct Platform : IComparable<Platform>
+    {
+        public Coord[] tiles;
+
+        public Platform(Coord[] tiles)
+        {
+            this.tiles = tiles;
+        }
+
+        //Sort ladders from left to right
+        public int CompareTo(Platform other)
+        {
             return tiles[0].x.CompareTo(other.tiles[0].x);
         }
     }
+
+
 
     private void Start()
     {
@@ -127,6 +156,7 @@ public class MapGenerator : MonoBehaviour {
 
         ProcessMap();
         FindLadders();
+        FindPlatforms();
 
         PaintMapTiles();
 
@@ -301,10 +331,58 @@ public class MapGenerator : MonoBehaviour {
         }
 
         //If all conditions are satisfied, mark the coordinates to place ladders
-        if(index > minLadderRange)
+        if(index > minLadderRange && burrowingDepth < ladderGroundThreshold)
         {
             ladders.Add(new Ladder(ladderCoords.ToArray(), burrowingDepth));
         }
+    }
+
+    //Build the platforms, simply check if an empty space is between the min and max platform length
+    private void BuildPlatform(int x, int y)
+    {
+        List<Coord> tiles = new List<Coord>();
+        int index = 1;
+        int groundProximity = 0;
+
+        while(map[x + index,y] == 0)
+        {
+            if (IsOutOfBounds(x + index, y) || index > maxPlatformLength) return;
+
+            if (index > 0 && CloseToGround(x + index, y))
+            {
+                groundProximity++;
+            }
+
+            tiles.Add(new Coord(x + index, y));
+
+            index++;
+        }
+
+        if(tiles.Count >= minPlatformLength && groundProximity < tiles.Count * groundProximityRatio)
+        {
+            platforms.Add(new Platform(tiles.ToArray()));
+            foreach (Coord coord in tiles)
+            {
+                map[coord.x, coord.y] = 2;
+            }
+        }
+    }
+
+    private bool CloseToGround(int x, int y)
+    {
+        bool closeToGround = false;
+
+        for(int i = 0; i < MAX_JUMPABLE_HEIGHT; i++)
+        {
+            if (IsOutOfBounds(x, y + i) || map[x, y - i] != 0) closeToGround = true;
+        }
+
+        for(int i = 1; i <= 2; i++)
+        {
+            if(IsOutOfBounds(x, y + i) || map[x, y + i] != 0) closeToGround = true;
+        }
+
+        return closeToGround;
     }
 
     //Map Structure ============================================================
@@ -328,14 +406,36 @@ public class MapGenerator : MonoBehaviour {
             }
         }
 
+        ladders.Sort();
+        CombineLadders();
+    }
+
+    private void FindPlatforms()
+    {
+        platforms = new List<Platform> ();
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                if (map[x, y] == 1 && 
+                    x + 1 < width && map[x + 1,y] == 0 && 
+                    x - 1 > 0 && map[x - 1, y] == 1) BuildPlatform(x, y);
+            }
+        }
+    }
+
+    private void CombineLadders()
+    {
         List<Ladder> survivingLadders = new List<Ladder>();
         List<Ladder> ladderGroup = new List<Ladder>();
-        ladders.Sort();
+
         foreach (Ladder ladder in ladders)
         {
             //If the ladders are within the same vicinity, add them to the current ladder group (or if the ladder group is currently empty)
-            if (ladderGroup.Count == 0 || 
-                ladder.tiles[0].x - ladderGroup[ladderGroup.Count - 1].tiles[0].x < 3)
+            if (ladderGroup.Count == 0 ||
+                (Mathf.Abs(ladder.tiles[0].x - ladderGroup[ladderGroup.Count - 1].tiles[0].x) < 3
+                && Mathf.Abs(ladder.tiles[0].y - ladderGroup[ladderGroup.Count - 1].tiles[0].y) < 5))
             {
                 ladderGroup.Add(ladder);
             }
@@ -344,15 +444,15 @@ public class MapGenerator : MonoBehaviour {
             {
                 ladderGroup.Sort(delegate (Ladder a, Ladder b)
                 {
-                    return a.burrowCount.CompareTo(b.burrowCount);
+                    return a.tiles.Length.CompareTo(b.tiles.Length);
                 });
 
                 survivingLadders.Add(ladderGroup[0]);
-
-
                 ladderGroup = new List<Ladder>();
             }
         }
+
+        ladders = survivingLadders;
     }
 
     void SmoothMap()
@@ -748,6 +848,13 @@ public class MapGenerator : MonoBehaviour {
         }
 
         //Paint platform tiles
+        for(int i = 0; i < platforms.Count; i++)
+        {
+            for(int c = 0; c < platforms[i].tiles.Length; c++)
+            {
+                SetPlatformTile(platforms[i].tiles[c].x, platforms[i].tiles[c].y);
+            }
+        }
 
         //Paint ladder tiles
         for(int i = 0; i < ladders.Count; i++)

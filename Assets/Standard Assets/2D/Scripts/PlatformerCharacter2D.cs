@@ -140,12 +140,11 @@ namespace UnityStandardAssets._2D
         }
 
         IEnumerator DropThroughPlatform() {
-            Debug.Log("Ignoring platform collision!");
             checkingGround = false;
             Physics2D.IgnoreLayerCollision(9, 15);
             col.enabled = false;
             col.enabled = true;
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(0.25f);
             checkingGround = true;
             Physics2D.IgnoreLayerCollision(9, 15, false);
         }

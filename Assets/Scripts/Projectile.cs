@@ -60,7 +60,7 @@ public class Projectile : MonoBehaviour {
     {
         for (int i = 0; i < collisions.Length; i++)
         {
-            NPC enemy = collisions[i].GetComponent<NPC>();
+            Enemy enemy = collisions[i].GetComponent<Enemy>();
             if (enemy != null)
             {
 				potion.ApplyStatus (enemy);
