@@ -7,8 +7,24 @@ public class Door : MonoBehaviour {
 	bool entering = false;
 	public string targetScene = "";
 	string id;
+    private Collider2D playerCol;
+    private Collider2D doorCol;
 
-	public void Enter() {
+    private void Start()
+    {
+        doorCol = GetComponent<Collider2D>();
+        playerCol = FindObjectOfType<Player>().GetComponent<Collider2D>();
+    }
+
+    private void Update()
+    {
+        if(Physics2D.IsTouching(doorCol, playerCol) && Input.GetKeyDown(KeyCode.W))
+        {
+            Enter();
+        } 
+    }
+
+    public void Enter() {
 		entering = true;
 		if (string.IsNullOrEmpty (targetScene))
 			return;

@@ -18,4 +18,13 @@ public class EnemySight : MonoBehaviour {
             brain.target = collision.transform;
         }
     }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (brain == null) return;
+        if(collision.tag == "Player")
+        {
+            brain.target = null;
+        }
+    }
 }

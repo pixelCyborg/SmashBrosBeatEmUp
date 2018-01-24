@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class Player : MonoBehaviour {
     Inventory inventory;
-	UnityStandardAssets._2D.PlatformerCharacter2D controller;
+	PlatformerCharacter2D controller;
     Rigidbody2D body;
 	Animator anim;
 
@@ -29,18 +29,36 @@ public class Player : MonoBehaviour {
     public GameObject potionPrefab;
     public GameObject backpack;
     private Hotbar hotbar;
+    public bool takingDamage = false;
+    public float recoverTime = 1.0f;
 
     // Use this for initialization
     void Start () {
         body = GetComponent<Rigidbody2D>();
         source = GetComponent<AudioSource>();
-		controller = GetComponent<UnityStandardAssets._2D.PlatformerCharacter2D> ();
+		controller = GetComponent<PlatformerCharacter2D> ();
 		anim = GetComponent<Animator> ();
         inventory = Inventory.instance;
         hotbar = inventory.transform.parent.GetComponentInChildren<Hotbar>();
 		origScale = transform.localScale;
         potionPrefab = Resources.Load("Potion") as GameObject;
 	}
+
+    public void TakeDamage(int damage, Vector2 impact)
+    {
+        if (takingDamage) return;
+
+        takingDamage = true;
+        health -= damage;
+        body.AddForce(impact * damage, ForceMode2D.Impulse);
+        StartCoroutine(_TakeDamage());
+    }
+
+    IEnumerator _TakeDamage()
+    {
+        yield return new WaitForSeconds(recoverTime);
+        takingDamage = false;
+    }
 
     bool Grounded()
     {
@@ -64,7 +82,7 @@ public class Player : MonoBehaviour {
         Projectile thrownPotion = Instantiate(potionPrefab, transform.position, potionPrefab.transform.rotation).GetComponent<Projectile>();
         thrownPotion.GetComponent<SpriteRenderer>().sprite = tile.item.sprite;
         thrownPotion.potion = potionBlock;
-        thrownPotion.Throw(body.velocity);
+        thrownPotion.Throw(transform);
     }
 
     public void PickUp(Coin coin)

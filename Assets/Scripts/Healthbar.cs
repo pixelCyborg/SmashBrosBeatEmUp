@@ -8,6 +8,8 @@ public class Healthbar : MonoBehaviour {
     List<SpriteRenderer> lives;
     GameObject lifePrefab;
 
+    public bool dynamicPosition;
+
     public void Start()
     {
         lifePrefab = transform.GetChild(0).gameObject;

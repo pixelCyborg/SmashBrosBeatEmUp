@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class CrossbowBolt : MonoBehaviour {
-    public float boltSpeed = 1.0f;
     int damage = 1;
     Rigidbody2D body;
     Vector3 dir;
@@ -18,7 +17,7 @@ public class CrossbowBolt : MonoBehaviour {
     {
         body = GetComponent<Rigidbody2D>();
         StartCoroutine(StartTimeout());
-        body.velocity = new Vector2(x, y) * boltSpeed;
+        body.velocity = new Vector2(x, y);
     }
 
     IEnumerator StartTimeout()

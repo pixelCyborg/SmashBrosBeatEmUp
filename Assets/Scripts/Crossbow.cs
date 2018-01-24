@@ -8,6 +8,7 @@ public class Crossbow : MonoBehaviour {
 
     private static bool CanShoot = true;
     public float reloadTime = 0.5f;
+    public float boltSpeed = 1.0f;
 
     private void Start()
     {
@@ -18,6 +19,8 @@ public class Crossbow : MonoBehaviour {
     {
         if (CanShoot && Input.GetButtonDown("Fire1"))
         {
+
+            /*
             Vector3 direction = transform.localScale;
             direction.y = 0;
             if(Input.GetAxis("Vertical") < -0.2f)
@@ -30,6 +33,9 @@ public class Crossbow : MonoBehaviour {
                 direction.y = 1;
                 direction.x = 0;
             }
+            */
+            Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 direction = (mouseWorldPos - transform.position).normalized * boltSpeed;
 
             StartCoroutine(Reload());
             Crossbow.Shoot(direction.x, direction.y);

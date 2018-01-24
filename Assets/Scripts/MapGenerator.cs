@@ -37,6 +37,12 @@ public class MapGenerator : MonoBehaviour {
     public Transform roomParent;
     public GameObject roomPrefab;
 
+    [Header("Interactables")]
+    public GameObject doorObject;
+    public Transform interactableParent;
+
+    public Transform enemyParent;
+    public GameObject skeletonEnemy;
     int[,] map;
     List<Ladder> ladders;
     List<Platform> platforms;
@@ -80,6 +86,9 @@ public class MapGenerator : MonoBehaviour {
     public int maxPlatformLength = 15;
     [Range(0.0f, 1.0f)]
     public float groundProximityRatio = 0.33f;
+
+    [Range(0.0f, 100.0f)]
+    public float enemySpawnRate = 20.0f;
 
     struct Coord : IEquatable<Coord>, IComparable<Coord>
     {
@@ -157,10 +166,12 @@ public class MapGenerator : MonoBehaviour {
         ProcessMap();
         FindLadders();
         FindPlatforms();
+        PlaceEnemies();
 
         PaintMapTiles();
 
         PlacePlayerAtStart();
+        PlaceDoorAtExit();
     }
 
     //Map Flags =========================
@@ -206,6 +217,49 @@ public class MapGenerator : MonoBehaviour {
         return startPoint;
     }
 
+    //Map Flags =========================
+    Coord BestExitPoint()
+    {
+        Coord endPoint;
+        int y = 1;
+        bool foundEndPoint = false;
+        List<Coord> possibleExits = new List<Coord>();
+
+        //Find a space close to the top that
+        while (!foundEndPoint)
+        {
+            y++;
+            for (int x = 0; x < width - 1; x++)
+            {
+                if (map[x, y] == 0)
+                {
+                    if (HasRoom(x, y))
+                    {
+                        possibleExits.Add(new Coord(x, y));
+                        foundEndPoint = true;
+                    }
+                }
+            }
+        }
+
+        endPoint = possibleExits[UnityEngine.Random.Range(0, possibleExits.Count - 1)];
+
+        //From that space draw downward until hitting ground
+        bool hitGround = false;
+        y = endPoint.y;
+        while (!hitGround)
+        {
+            if (map[endPoint.x, y] == 1)
+            {
+                hitGround = true;
+                endPoint.y = y + 2;
+            }
+            y--;
+        }
+
+        return endPoint;
+    }
+
     bool IsOutOfBounds(int x, int y)
     {
         return x < 0 || x > width - 1 || y < 0 || y > height - 1;
@@ -215,7 +269,7 @@ public class MapGenerator : MonoBehaviour {
     {
         try
         {
-            return map[x, y] == 1 && map[x, y + 1] != 1 && map[x, y + 2] != 1;
+            return map[x, y] != 0 && map[x, y + 1] == 0 && map[x, y + 2] == 0;
         }
         catch(Exception e)
         {
@@ -374,7 +428,7 @@ public class MapGenerator : MonoBehaviour {
 
         for(int i = 0; i < MAX_JUMPABLE_HEIGHT; i++)
         {
-            if (IsOutOfBounds(x, y + i) || map[x, y - i] != 0) closeToGround = true;
+            if (IsOutOfBounds(x, y - i) || map[x, y - i] != 0) closeToGround = true;
         }
 
         for(int i = 1; i <= 2; i++)
@@ -393,6 +447,17 @@ public class MapGenerator : MonoBehaviour {
         if (player == null) return;
 
         player.transform.position = CoordToWorldPoint(startPoint);
+    }
+
+    void PlaceDoorAtExit()
+    {
+        for(int i = interactableParent.childCount - 1; i >= 0; i--)
+        {
+            Destroy(interactableParent.GetChild(i).gameObject);
+        }
+
+        Coord exitPoint = BestExitPoint();
+        Instantiate(doorObject, CoordToWorldPoint(exitPoint) - Vector3.up * 0.6f, Quaternion.identity, interactableParent);
     }
 
     private void FindLadders()
@@ -453,6 +518,52 @@ public class MapGenerator : MonoBehaviour {
         }
 
         ladders = survivingLadders;
+    }
+
+    void PlaceEnemies()
+    {
+        for(int i = enemyParent.childCount - 1; i >= 0; i--)
+        {
+            DestroyImmediate(enemyParent.GetChild(i).gameObject);
+        }
+
+        for(int i = 0; i < platforms.Count; i++)
+        {
+            PlaceEnemiesOnPlatform(platforms[i]);
+        }
+
+        for(int i = 0; i < rooms.Length; i++)
+        {
+            PlaceEnemiesInRoom(rooms[i]);
+        }
+    }
+
+    void PlaceEnemiesOnPlatform(Platform platform)
+    {
+        foreach (Coord coord in platform.tiles)
+        {
+            if (IsFloorTile(coord.x, coord.y) && IsFloorTile(coord.x - 1, coord.y) && IsFloorTile(coord.x + 1, coord.y))
+            {
+                if (UnityEngine.Random.Range(0, 100) > 100 - (enemySpawnRate * 0.33f))
+                {
+                    Instantiate(skeletonEnemy, CoordToWorldPoint(coord) + Vector3.up * 0.5f, Quaternion.identity, enemyParent);
+                }
+            }
+        }
+    }
+
+    void PlaceEnemiesInRoom(Room room)
+    {
+        foreach(Coord coord in room.edgeTiles)
+        {
+            if (IsFloorTile(coord.x, coord.y - 1) && IsFloorTile(coord.x - 1, coord.y - 1) && IsFloorTile(coord.x + 1, coord.y - 1))
+            {
+                if (UnityEngine.Random.Range(0, 100) > 100 - enemySpawnRate)
+                {
+                    Instantiate(skeletonEnemy, CoordToWorldPoint(coord) + Vector3.up * 0.5f, Quaternion.identity, enemyParent);
+                }
+            }
+        }
     }
 
     void SmoothMap()

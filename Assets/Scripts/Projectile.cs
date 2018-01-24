@@ -39,15 +39,17 @@ public class Projectile : MonoBehaviour {
 		}
 	}
 
-    public void Throw(Vector2 playerVel)
+    public void Throw(Transform origin)
 	{
 		if (potion == null)
 			potion = new Potion ();
 		if (body == null)
 			body = GetComponent<Rigidbody2D> ();
-		Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
+
+		Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
+        mouseWorldPos.z = origin.position.z;
 		body.AddTorque (Random.Range (-50, 50));
-		body.AddForce (((mouseWorldPos - (Vector2)transform.position).normalized) * potion.throwForce, ForceMode2D.Impulse);
+		body.AddForce ((transform.position - (Vector3)mouseWorldPos).normalized, ForceMode2D.Impulse);
 	}
 
 
