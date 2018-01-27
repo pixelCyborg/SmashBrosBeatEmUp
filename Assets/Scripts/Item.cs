@@ -7,6 +7,7 @@ public class Item {
     public string Id;
     public string itemName;
     public string description;
+    public int value = 0;
     public Sprite sprite;
     public List<Property> properties = new List<Property>();
     public Potion potion = null;

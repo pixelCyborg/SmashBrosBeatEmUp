@@ -1,0 +1,31 @@
+Sprites & Animations:
+
+NPCs
+===============
+Wail(PC):
+	- Idle
+	- Walk
+	- Climb Ladder
+	- Jump Windup -> Jump Loop -> Jump Land
+	- Take Damage
+	
+	* Might want to sprite the Arms seperately from the body for the purpose of animating them to point
+to where the player is aiming? (This will depend on what aiming method is settled on)
+
+Skeleton(Enemy): 
+	- Walk
+	- Idle
+	- Lunge Windup -> Lunge Loop -> Land
+	- Take Damage
+
+Shopkeeper:
+	- Idle
+	- Interact / Speak
+
+Tiles
+========
+
+Items
+========
+
+Audio:

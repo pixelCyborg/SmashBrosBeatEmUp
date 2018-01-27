@@ -35,7 +35,9 @@ public class Crossbow : MonoBehaviour {
             }
             */
             Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector2 direction = (mouseWorldPos - transform.position).normalized * boltSpeed;
+            Vector2 direction = (mouseWorldPos - transform.position).normalized;
+            Debug.Log(direction);
+            direction *= boltSpeed;
 
             StartCoroutine(Reload());
             Crossbow.Shoot(direction.x, direction.y);

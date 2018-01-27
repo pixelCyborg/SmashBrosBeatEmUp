@@ -22,9 +22,14 @@ public class Inventory : MonoBehaviour {
     ItemTile[] inventoryTiles;
     List<Item> heldItems;
 
+    public static int coin = 0;
+    public Text coinMeter;
+    private static Text CoinMeter;
+
     void Awake()
     {
         instance = this;
+        CoinMeter = coinMeter;
     }
 
     void Start()
@@ -76,6 +81,12 @@ public class Inventory : MonoBehaviour {
             }
         }
 	}
+
+    public static void AddCoin(int amount = 1)
+    {
+        coin += amount;
+        CoinMeter.text = "Coin: " + coin;
+    }
 
     public void AddToInventory(Item item)
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine;
 
-public class Door : MonoBehaviour {
+public class Door : Interactable {
 	bool entering = false;
 	public string targetScene = "";
 	string id;
@@ -16,9 +16,10 @@ public class Door : MonoBehaviour {
         playerCol = FindObjectOfType<Player>().GetComponent<Collider2D>();
     }
 
-    private void Update()
+    internal override void OnInteract()
     {
-        if(Physics2D.IsTouching(doorCol, playerCol) && Input.GetKeyDown(KeyCode.W))
+        base.OnInteract();
+        if(Physics2D.IsTouching(doorCol, playerCol))
         {
             Enter();
         } 
@@ -29,11 +30,12 @@ public class Door : MonoBehaviour {
 		if (string.IsNullOrEmpty (targetScene))
 			return;
 
-		DontDestroyOnLoad (gameObject);
+        InteractionSelector.Deselect();
 		SceneManager.LoadScene (targetScene, LoadSceneMode.Additive);
 		SceneManager.UnloadSceneAsync (gameObject.scene);
 	}
 
+    /*  -=== Pretty sure this aint being used anymore
 	void OnSceneLoad() {
 		if (entering) {
 			Door[] doors = FindObjectsOfType<Door>();
@@ -45,4 +47,5 @@ public class Door : MonoBehaviour {
 			}
 		}
 	}
+    */
 }

@@ -67,9 +67,9 @@ public class Enemy : MonoBehaviour {
         if (bodyCol.IsTouching(playerCol)) {
             Player player = playerCol.GetComponent<Player>();
             Vector2 storedVel = body.velocity;
-            player.TakeDamage(damage, new Vector2(storedVel.x * 2, 5));
+            player.TakeDamage(damage, new Vector2(storedVel.x, 5));
             body.velocity = Vector2.zero;
-            body.AddForce(new Vector2(-storedVel.x * 4, 5), ForceMode2D.Impulse);
+            body.AddForce(new Vector2(-storedVel.x, 5), ForceMode2D.Impulse);
         }
 
         //If a target is found, chase it
@@ -86,7 +86,7 @@ public class Enemy : MonoBehaviour {
                 facingRight = !facingRight;
             }
 
-            body.velocity = Vector2.right * walkSpeed * (facingRight ? 2.0f : -2.0f);
+            body.velocity = Vector2.right * walkSpeed * (facingRight ? 1.5f : -1.5f);
 
             if (Vector2.Distance(transform.position, target.position) < 8.0f)
             {
@@ -124,7 +124,7 @@ public class Enemy : MonoBehaviour {
         lungeReady = false;
         moveDisabled = true;
         yield return new WaitForSeconds(lungeWindup);
-        body.velocity = Vector2.zero;
+
         body.AddForce(new Vector2(lungeForce.x * transform.localScale.x, lungeForce.y), ForceMode2D.Impulse);
         int timeoutIndex = 0;
         while(grounded)
@@ -165,7 +165,6 @@ public class Enemy : MonoBehaviour {
             GetComponent<SpriteRenderer>().color = Color.grey;
             //body.AddTorque(Random.Range(-180, 180));
             Vector3 oldPosition = Vector3.zero;
-            Debug.Log(Vector3.Distance(transform.position, oldPosition));
             StopCoroutine("_Lunge");
             body.drag = 0.2f;
             while (Vector3.Distance(transform.position, oldPosition) > 0.02f)

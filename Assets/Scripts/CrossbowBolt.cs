@@ -13,6 +13,13 @@ public class CrossbowBolt : MonoBehaviour {
         body = GetComponent<Rigidbody2D>();
     }
 
+    private void Update()
+    {
+        Vector2 v = body.velocity;
+        float angle = Mathf.Atan2(v.y, v.x) * Mathf.Rad2Deg - 90.0f;
+        transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+    }
+
     public void Shoot(float x, float y)
     {
         body = GetComponent<Rigidbody2D>();

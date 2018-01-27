@@ -87,7 +87,7 @@ public class Player : MonoBehaviour {
 
     public void PickUp(Coin coin)
     {
-
+        Inventory.AddCoin();
     }
 
     public void PickUp(Collectable collectable)

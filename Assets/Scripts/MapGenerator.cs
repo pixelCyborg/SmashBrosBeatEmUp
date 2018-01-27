@@ -457,7 +457,8 @@ public class MapGenerator : MonoBehaviour {
         }
 
         Coord exitPoint = BestExitPoint();
-        Instantiate(doorObject, CoordToWorldPoint(exitPoint) - Vector3.up * 0.6f, Quaternion.identity, interactableParent);
+        GameObject door = (GameObject)Instantiate(doorObject, CoordToWorldPoint(exitPoint) - Vector3.up * 0.6f, Quaternion.identity, interactableParent);
+        door.GetComponent<Door>().targetScene = "Camp";
     }
 
     private void FindLadders()
