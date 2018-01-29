@@ -98,13 +98,13 @@ public class Frozen : StatusEffect {
 		}
 
 		if (npc != null) {
-			origWalkSpeed = npc.walkSpeed;
-			npc.walkSpeed = 0.0f;
+			origWalkSpeed = npc.moveSpeed;
+			npc.moveSpeed = 0.0f;
 		}
 	}
 
 	public override void OnEnd() {
-		npc.walkSpeed = origWalkSpeed;
+		npc.moveSpeed = origWalkSpeed;
 		ResetColor ();
 	}
 }
