@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class Player : MonoBehaviour {
+    SpriteRenderer spriteRenderer;
     Inventory inventory;
 	PlatformerCharacter2D controller;
     Rigidbody2D body;
@@ -31,6 +32,9 @@ public class Player : MonoBehaviour {
     private Hotbar hotbar;
     public bool takingDamage = false;
     public float recoverTime = 1.0f;
+    private Crossbow crossbow;
+
+    public Healthbar healthbar;
 
     // Use this for initialization
     void Start () {
@@ -40,9 +44,22 @@ public class Player : MonoBehaviour {
 		anim = GetComponent<Animator> ();
         inventory = Inventory.instance;
         hotbar = inventory.transform.parent.GetComponentInChildren<Hotbar>();
+        crossbow = GetComponentInChildren<Crossbow>();
 		origScale = transform.localScale;
         potionPrefab = Resources.Load("Potion") as GameObject;
+        healthbar.SetLifeCount(health);
+        spriteRenderer = GetComponent<SpriteRenderer>();
 	}
+
+    private void Update()
+    {
+        if (takingDamage) return;
+
+        if(Input.GetButtonDown("Fire1"))
+        {
+            crossbow.FireCrossbow();
+        }
+    }
 
     public void TakeDamage(int damage, Vector2 impact)
     {
@@ -51,13 +68,24 @@ public class Player : MonoBehaviour {
         takingDamage = true;
         health -= damage;
         body.AddForce(impact * damage, ForceMode2D.Impulse);
-        StartCoroutine(_TakeDamage());
+        healthbar.SetLifeCount(health);
+        if (health > 0) StartCoroutine(_TakeDamage());
+        else StartCoroutine(_Die());
+
     }
 
     IEnumerator _TakeDamage()
     {
         yield return new WaitForSeconds(recoverTime);
         takingDamage = false;
+    }
+
+    IEnumerator _Die()
+    {
+        body.constraints = RigidbodyConstraints2D.None;
+        controller.enabled = false;
+        spriteRenderer.color = Color.grey;
+        yield return new WaitForSeconds(3.0f);
     }
 
     bool Grounded()

@@ -32,6 +32,7 @@ public class Enemy : MonoBehaviour {
     internal virtual void OnDamage(Transform _target) { }
     internal virtual void PursueTarget(Transform _target) { }
     internal virtual void Attack(Transform _target) { }
+    internal virtual void OnDie() { }
 
 	// Use this for initialization
 	void Start () {
@@ -49,7 +50,7 @@ public class Enemy : MonoBehaviour {
 	}
 
     // Update is called once per frame
-    void Update() {
+    internal void Update() {
         CheckGround();
 
         //If unable to move, return
@@ -128,13 +129,14 @@ public class Enemy : MonoBehaviour {
         {
             dead = true;
             moveDisabled = true;
+            OnDie();
+
             body.constraints = RigidbodyConstraints2D.None;
             DropCoins(enemyPos);
             GetComponent<SpriteRenderer>().color = Color.grey;
-            //body.AddTorque(Random.Range(-180, 180));
             Vector3 oldPosition = Vector3.zero;
-            StopCoroutine("_Lunge");
             body.drag = 0.2f;
+
             while (Vector3.Distance(transform.position, oldPosition) > 0.02f)
             {
                 oldPosition = transform.position;
@@ -148,7 +150,7 @@ public class Enemy : MonoBehaviour {
         }
     }
 
-    void Die(Vector2 enemyPos)
+    internal virtual void Die(Vector2 enemyPos)
     {
         Destroy(GetComponent<Collider2D>());
         Destroy(GetComponent<Rigidbody2D>());

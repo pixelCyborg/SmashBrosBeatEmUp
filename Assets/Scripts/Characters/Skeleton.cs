@@ -41,7 +41,6 @@ public class Skeleton : Enemy {
         base.PursueTarget(target);
         if (grounded)
         {
-            Debug.Log("Pursuing");
             if (target.position.x - transform.position.x < 0 && facingRight)
             {
                 transform.localScale = new Vector2(-transform.localScale.x, transform.localScale.y);

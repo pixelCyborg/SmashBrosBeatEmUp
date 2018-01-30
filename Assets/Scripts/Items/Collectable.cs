@@ -31,7 +31,7 @@ public class Collectable : MonoBehaviour {
 
     void OnCollisionEnter2D(Collision2D other)
     {
-        if (other.gameObject.tag == "Player")
+        if (other.gameObject.tag == "Player" && this.enabled)
         {
             Player player = other.gameObject.GetComponentInParent<Player>();
             if (player != null)

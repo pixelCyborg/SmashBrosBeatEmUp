@@ -41,8 +41,11 @@ public class MapGenerator : MonoBehaviour {
     public GameObject doorObject;
     public Transform interactableParent;
 
+    [Header("Enemies")]
     public Transform enemyParent;
     public GameObject skeletonEnemy;
+    public GameObject floaterEnemy;
+
     int[,] map;
     List<Ladder> ladders;
     List<Platform> platforms;
@@ -263,6 +266,20 @@ public class MapGenerator : MonoBehaviour {
     bool IsOutOfBounds(int x, int y)
     {
         return x < 0 || x > width - 1 || y < 0 || y > height - 1;
+    }
+
+    bool NoNeighboringTiles (int x, int y)
+    {
+        //Check left/right
+        return map[x, y] != 1 && map[x - 1, y] != 1 && map[x + 1, y] != 1 
+        //Up.down
+        && map[x, y + 1] != 1 && map[x, y - 1] != 1
+        //Check corners
+        && map[x - 1, y + 1] != 1 && map[x - 1, y - 1] != 1
+        && map[x + 1, y + 1] != 1 && map[x + 1, y - 1] != 1
+        //Check for enemies
+        && Physics2D.OverlapCircle(CoordToWorldPoint(new Coord(x, y)), 3.0f, 1 << LayerMask.NameToLayer("Enemy")) == null;
+
     }
 
     bool IsFloorTile(int x, int y)
@@ -562,6 +579,17 @@ public class MapGenerator : MonoBehaviour {
                 if (UnityEngine.Random.Range(0, 100) > 100 - enemySpawnRate)
                 {
                     Instantiate(skeletonEnemy, CoordToWorldPoint(coord) + Vector3.up * 0.5f, Quaternion.identity, enemyParent);
+                }
+            }
+        }
+
+        foreach(Coord coord in room.tiles)
+        {
+            if(NoNeighboringTiles(coord.x, coord.y))
+            {
+                if(UnityEngine.Random.Range(0, 100) > 100 - (enemySpawnRate * 0.2f))
+                {
+                    Instantiate(floaterEnemy, CoordToWorldPoint(coord), Quaternion.identity, enemyParent);
                 }
             }
         }

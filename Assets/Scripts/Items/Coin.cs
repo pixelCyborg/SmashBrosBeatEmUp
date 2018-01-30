@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Coin : MonoBehaviour {
     public AudioClip coinSound;
-    const int COIN_TIMEOUT = 3;
+    const int COIN_TIMEOUT = 10;
 
     private void Start()
     {
@@ -17,10 +17,10 @@ public class Coin : MonoBehaviour {
         Destroy(gameObject);
     }
 
-    private void OnLevelWasLoaded(int level)
+    /*private void OnLevelWasLoaded(int level)
     {
         Destroy(gameObject);
-    }
+    }*/
 
     void OnTriggerEnter2D(Collider2D other)
     {

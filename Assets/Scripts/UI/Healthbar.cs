@@ -1,11 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Healthbar : MonoBehaviour {
     int maxHealth;
     int currentHealth;
     List<SpriteRenderer> lives;
+    List<Image> uiLives;
     GameObject lifePrefab;
 
     public bool dynamicPosition;
@@ -13,7 +15,10 @@ public class Healthbar : MonoBehaviour {
     public void Start()
     {
         lifePrefab = transform.GetChild(0).gameObject;
-        maxHealth = GetComponentInParent<Enemy>().health;
+
+        if (GetComponentInParent<Enemy>()) maxHealth = GetComponentInParent<Enemy>().health;
+        if (GetComponentInParent<Player>()) maxHealth = Player.Health;
+
         currentHealth = maxHealth;
 
         for(int i = 0; i < maxHealth - 1; i++)
@@ -22,16 +27,27 @@ public class Healthbar : MonoBehaviour {
         }
 
         lives = new List<SpriteRenderer>();
+        uiLives = new List<Image>();
         for(int i = 0; i < transform.childCount; i++)
         {
             lives.Add(transform.GetChild(i).GetComponent<SpriteRenderer>());
+            uiLives.Add(transform.GetChild(i).GetComponent<Image>());
         }
 
         UpdateObjectPositions();
     }
 
+    private void Update()
+    {
+        if (dynamicPosition)
+        {
+            transform.rotation = Quaternion.identity;
+        }
+    }
+
     void UpdateObjectPositions()
     {
+        if (!dynamicPosition) return;
         for(int i = 0; i < lives.Count; i++)
         {
             float middle = (float)currentHealth / 2;
@@ -48,7 +64,8 @@ public class Healthbar : MonoBehaviour {
             {
                 if(i > count - 1)
                 {
-                    lives[i].enabled = false;
+                    if(lives[i] != null) lives[i].enabled = false;
+                    if (uiLives[i] != null) uiLives[i].enabled = false;
                 }
             }
         }
