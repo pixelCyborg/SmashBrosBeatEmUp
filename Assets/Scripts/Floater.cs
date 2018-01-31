@@ -53,12 +53,10 @@ public class Floater : Enemy {
     {
         base.PursueTarget(_target);
         base.Attack(_target);
-        Debug.Log((detectionRadius - (Mathf.Clamp(0, detectionRadius, Vector2.Distance(transform.position, _target.position)))));
         Vector2 velocity = _target.position - transform.position;
         body.velocity = velocity.normalized * 
             (moveSpeed + (detectionRadius - 
             (Mathf.Clamp(Vector2.Distance(transform.position, _target.position), 0, detectionRadius - 1))
         ) * 0.5f);
-        Debug.Log(body.velocity);
     }
 }

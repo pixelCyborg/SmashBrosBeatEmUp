@@ -4,13 +4,20 @@ using UnityEngine;
 
 public class CrossbowUpgrade : MonoBehaviour {
     public Crossbow crossbow;
+    public Upgrade upgrade;
+
+    public enum Upgrade
+    {
+        Multishot, Scope, Repeater
+    }
 
     private void Start()
     {
         crossbow = GetComponent<Crossbow>();
     }
 
-    internal virtual void ApplyUpgrade() { }
+    internal virtual void ApplyUpgrade() { crossbow = GetComponent<Crossbow>(); }
+    internal virtual void RemoveUpgrade() { Destroy(this); }
     internal virtual void OnReload() { }
     internal virtual void OnShoot(float x, float y) { }
 }

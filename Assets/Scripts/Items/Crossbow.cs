@@ -8,17 +8,22 @@ public class Crossbow : MonoBehaviour {
     private static Crossbow instance;
 
     private static bool CanShoot = true;
+    public int damage = 1;
     public float reloadTime = 0.5f;
     public float boltSpeed = 1.0f;
 
     private void Start()
     {
         instance = this;
+    }
+
+    void GetUpgrades()
+    {
+        upgrades = new List<CrossbowUpgrade>();
         CrossbowUpgrade[] upgradeArray = transform.GetComponents<CrossbowUpgrade>();
-        foreach(CrossbowUpgrade upgrade in upgradeArray)
+        foreach (CrossbowUpgrade upgrade in upgradeArray)
         {
             upgrades.Add(upgrade);
-            upgrade.ApplyUpgrade();
         }
     }
 
@@ -47,6 +52,8 @@ public class Crossbow : MonoBehaviour {
 
             Reload();
             Shoot(direction.x, direction.y);
+
+            GetUpgrades();
             foreach (CrossbowUpgrade upgrade in upgrades)
             {
                 upgrade.OnShoot(direction.x, direction.y);

@@ -20,8 +20,9 @@ public class CrossbowBolt : MonoBehaviour {
         transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
     }
 
-    public void Shoot(float x, float y)
+    public void Shoot(float x, float y, int _damage = 1)
     {
+        damage = _damage;
         body = GetComponent<Rigidbody2D>();
         StartCoroutine(StartTimeout());
         body.velocity = new Vector2(x, y);

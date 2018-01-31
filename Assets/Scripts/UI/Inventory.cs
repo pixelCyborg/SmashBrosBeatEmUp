@@ -132,10 +132,13 @@ public class Inventory : MonoBehaviour {
             if(hoveredTile.item != null)
             {
                 origTile.SetItem(hoveredTile.item);
+
+                hoveredTile.onRemoveItem(hoveredTile.item);
                 hoveredTile.SetItem(draggedItem);
+
                 HoverBox.instance.ShowDescription(draggedItem);
             } 
-            hoveredTile.SetItem(draggedItem);
+            else hoveredTile.SetItem(draggedItem);
         }
         else if(Cauldron.instance.isHovering)
         {

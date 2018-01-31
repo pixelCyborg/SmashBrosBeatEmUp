@@ -16,6 +16,7 @@ public class ShopItem : Interactable {
             {
                 //Spawn a collectable but set it to be only for show
                 collectable = (GameObject)Instantiate(itemPrefab, anchor.position, itemPrefab.transform.rotation, anchor);
+                collectable.name = itemPrefab.name;
                 collectable.GetComponent<Rigidbody2D>().simulated = false;
                 StartCoroutine(GetItem());
             }
@@ -37,7 +38,7 @@ public class ShopItem : Interactable {
     {
         yield return null;
         item = collectable.GetComponent<Collectable>().item;
-        description = "Buy " + item.itemName + "\n" + item.value + "g";
+        description = item.itemName + "\n" + item.value + "g\n\n\n\n" ;
     }
 
     internal override void OnInteract()

@@ -10,6 +10,11 @@ public class ItemTile : MonoBehaviour {
     private Image background;
     private Color origColor;
 
+    public delegate void OnSetItem(Item setItem);
+    public delegate void OnRemoveItem(Item removeItem);
+    public OnSetItem onSetItem;
+    public OnRemoveItem onRemoveItem;
+
     void Start()
     {
         item = null;
@@ -23,10 +28,13 @@ public class ItemTile : MonoBehaviour {
         rend.enabled = true;
         rend.sprite = item.sprite;
         rend.preserveAspect = true;
+
+        if(onSetItem != null) onSetItem(item);
     }
 
     public void RemoveItem()
     {
+        if(onRemoveItem != null) onRemoveItem(item);
         item = null;
         rend.enabled = false;
     }

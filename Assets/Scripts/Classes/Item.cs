@@ -11,4 +11,5 @@ public class Item {
     public Sprite sprite;
     public List<Property> properties = new List<Property>();
     public Potion potion = null;
+    public CrossbowUpgrade.Upgrade upgrade;
 }

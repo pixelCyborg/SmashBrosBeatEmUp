@@ -7,6 +7,13 @@ public class Multishot : CrossbowUpgrade
     internal override void ApplyUpgrade()
     {
         base.ApplyUpgrade();
+        crossbow.reloadTime += 0.33f;
+    }
+
+    internal override void RemoveUpgrade()
+    {
+        crossbow.reloadTime -= 0.33f;
+        base.RemoveUpgrade();
     }
 
     internal override void OnShoot(float x, float y)
