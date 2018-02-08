@@ -20,7 +20,7 @@ public class InteractionSelector : MonoBehaviour
         origSprite = rend.sprite;
     }
 
-    public static void Select(Transform newTarget, string text = "")
+public static void Select(Transform newTarget, string text = "")
     {
         target = newTarget;
         targetSprite = target.GetComponent<SpriteRenderer>();
@@ -30,6 +30,7 @@ public class InteractionSelector : MonoBehaviour
         {
             interactionText.text = text;
             interactionText.transform.localPosition = Vector3.up * targetSprite.bounds.extents.y * 1f;
+            //interactionText.transform.rotation = targetSprite.transform.rotation;
         }
     }
 
@@ -49,6 +50,11 @@ public class InteractionSelector : MonoBehaviour
             rend.sprite = targetSprite.sprite;
             transform.position = target.position;
             transform.localScale = target.localScale;
+
+            if (Input.GetKeyDown(KeyCode.W))
+            {
+                target.GetComponent<Interactable>().OnInteract();
+            }
         }
     }
 }

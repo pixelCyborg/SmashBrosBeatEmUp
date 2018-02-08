@@ -2,14 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CrossbowBolt : MonoBehaviour {
-    int damage = 1;
-    Rigidbody2D body;
-    Vector3 dir;
-    float rotationSpeed = 10.0f;
-
-    private void Start()
+public class CrossbowBolt : Projectile {
+    new private void Start()
     {
+        base.Start();
         body = GetComponent<Rigidbody2D>();
     }
 
@@ -25,7 +21,7 @@ public class CrossbowBolt : MonoBehaviour {
         damage = _damage;
         body = GetComponent<Rigidbody2D>();
         StartCoroutine(StartTimeout());
-        body.velocity = new Vector2(x, y);
+        body.AddForce(new Vector2(x, y).normalized * Crossbow.instance.boltSpeed, ForceMode2D.Impulse);
     }
 
     IEnumerator StartTimeout()
@@ -37,6 +33,7 @@ public class CrossbowBolt : MonoBehaviour {
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.transform.tag == "Player") return;
+
         if (collision.transform.tag == "Enemy")
         {
             Enemy enemy = collision.gameObject.GetComponent<Enemy>();
@@ -44,8 +41,11 @@ public class CrossbowBolt : MonoBehaviour {
             {
                 enemy.TakeDamage(damage, transform.position);
             }
+            Destroy(gameObject);
         }
-        //body.gravityScale = 1;
-        Destroy(gameObject);
+        else if (!CheckImpact(collision))
+        {
+            Destroy(gameObject);
+        }
     }
 }

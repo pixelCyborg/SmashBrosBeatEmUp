@@ -5,9 +5,11 @@ using UnityEngine;
 public class CameraFollow : MonoBehaviour {
 	public float speed = 4.0f;
     public float zoomSpeed = 2.0f;
+    public float maxZoom = 10.0f;
+    private static float MaxZoom;
 	private static Transform target;
     private static Transform defaultTarget;
-	private Vector3 offset = new Vector3(0, 0, -10);
+	private Vector3 offset = new Vector3(0, 0, -5);
     private static float defaultZoom;
     private static float targetZoom;
     private static Camera cam;
@@ -16,7 +18,8 @@ public class CameraFollow : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        cam = GetComponent<Camera>();
+        MaxZoom = maxZoom;
+        cam = GetComponentInChildren<Camera>();
         defaultZoom = cam.orthographicSize;
         targetZoom = defaultZoom;
 		target = GameObject.FindGameObjectWithTag ("Player").transform;
@@ -44,6 +47,7 @@ public class CameraFollow : MonoBehaviour {
         }
 
         targetZoom *= 1.2f;
+        if (targetZoom > MaxZoom) targetZoom = MaxZoom;
 
         /*targetZoom = (col.transform.localScale.x > col.transform.localScale.y ?
             col.transform.localScale.x : 
@@ -68,7 +72,10 @@ public class CameraFollow : MonoBehaviour {
 		if (target == null)
 			return;
 
-        transform.position = Vector3.Lerp (transform.position, (target.position + defaultTarget.position)/2.0f + offset, Time.deltaTime * speed);
+        Vector3 reticlePos = cam.ScreenToWorldPoint(Input.mousePosition);
+        reticlePos.z = 0;
+
+        transform.position = Vector3.Lerp (transform.position, (target.position + defaultTarget.position + reticlePos * 0.5f)/2.5f + offset, Time.deltaTime * speed);
         cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, targetZoom, Time.deltaTime * zoomSpeed);
 	}
 }

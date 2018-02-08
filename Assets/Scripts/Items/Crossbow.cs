@@ -5,16 +5,18 @@ using UnityEngine;
 public class Crossbow : MonoBehaviour {
     public List<CrossbowUpgrade> upgrades = new List<CrossbowUpgrade>();
     public GameObject boltPrefab;
-    private static Crossbow instance;
+    public static Crossbow instance;
 
     private static bool CanShoot = true;
     public int damage = 1;
     public float reloadTime = 0.5f;
     public float boltSpeed = 1.0f;
+    public List<Property> properties;
 
     private void Start()
     {
         instance = this;
+        properties = new List<Property>();
     }
 
     void GetUpgrades()
@@ -29,7 +31,7 @@ public class Crossbow : MonoBehaviour {
 
     public void FireCrossbow()
     {
-        if (CanShoot)
+        if (CanShoot && !Inventory.open)
         {
 
             /*
@@ -46,6 +48,7 @@ public class Crossbow : MonoBehaviour {
                 direction.x = 0;
             }
             */
+  
             Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector2 direction = (mouseWorldPos - transform.position).normalized;
             direction *= boltSpeed;
@@ -58,6 +61,8 @@ public class Crossbow : MonoBehaviour {
             {
                 upgrade.OnShoot(direction.x, direction.y);
             }
+
+            CameraShake.AddShake(damage * 0.1f);
         }
     }
 
@@ -79,7 +84,8 @@ public class Crossbow : MonoBehaviour {
 
     public void Shoot(float x, float y)
     {
-        GameObject bolt = Instantiate(instance.boltPrefab, instance.transform.position, Quaternion.identity);
-        bolt.GetComponent<CrossbowBolt>().Shoot(x, y);
+        CrossbowBolt bolt = Instantiate(instance.boltPrefab, instance.transform.position, Quaternion.identity).GetComponent<CrossbowBolt>();
+        bolt.properties = properties;
+        bolt.Shoot(x, y, damage);
     }
 }

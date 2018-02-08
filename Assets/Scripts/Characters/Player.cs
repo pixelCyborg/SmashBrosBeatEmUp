@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class Player : MonoBehaviour {
+    public static Player instance;
     SpriteRenderer spriteRenderer;
     Inventory inventory;
 	PlatformerCharacter2D controller;
@@ -22,6 +23,7 @@ public class Player : MonoBehaviour {
 		get { return health; }
 		set { health = value; }
 	}
+    private int maxHealth;
 	private int damage = 1;
 	Vector2 origScale;
     private AudioSource source;
@@ -38,6 +40,8 @@ public class Player : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
+        instance = this;
+        maxHealth = health;
         body = GetComponent<Rigidbody2D>();
         source = GetComponent<AudioSource>();
 		controller = GetComponent<PlatformerCharacter2D> ();
@@ -59,6 +63,22 @@ public class Player : MonoBehaviour {
         {
             crossbow.FireCrossbow();
         }
+
+        if(Input.GetButtonDown("Fire2"))
+        {
+            ThrowPotion();
+        }
+    }
+
+    public void Reset()
+    {
+        transform.position = Vector3.zero;
+        transform.rotation = Quaternion.identity;
+        health = maxHealth;
+        healthbar.SetLifeCount(health);
+        body.constraints = RigidbodyConstraints2D.FreezeRotation;
+        takingDamage = false;
+        controller.enabled = true;
     }
 
     public void TakeDamage(int damage, Vector2 impact)
@@ -86,6 +106,7 @@ public class Player : MonoBehaviour {
         controller.enabled = false;
         spriteRenderer.color = Color.grey;
         yield return new WaitForSeconds(3.0f);
+        CanvasManager.ShowGameOver();
     }
 
     bool Grounded()
@@ -109,7 +130,7 @@ public class Player : MonoBehaviour {
 
         Projectile thrownPotion = Instantiate(potionPrefab, transform.position, potionPrefab.transform.rotation).GetComponent<Projectile>();
         thrownPotion.GetComponent<SpriteRenderer>().sprite = tile.item.sprite;
-        thrownPotion.potion = potionBlock;
+        thrownPotion.properties = new List<Property>(potionBlock.properties);
         thrownPotion.Throw(transform);
     }
 

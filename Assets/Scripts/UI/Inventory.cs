@@ -25,6 +25,7 @@ public class Inventory : MonoBehaviour {
     public static int coin = 0;
     public Text coinMeter;
     private static Text CoinMeter;
+    public static bool open = false;
 
     void Awake()
     {
@@ -162,6 +163,7 @@ public class Inventory : MonoBehaviour {
         group.alpha = 1;
         group.interactable = true;
         group.blocksRaycasts = true;
+        open = true;
     }
 
     void ToggleOff()
@@ -169,6 +171,7 @@ public class Inventory : MonoBehaviour {
         group.alpha = 0;
         group.interactable = false;
         group.blocksRaycasts = false;
+        open = false;
     }
 
 	public Item[] GetInventoryItems() {

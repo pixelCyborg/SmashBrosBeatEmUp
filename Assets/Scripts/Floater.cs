@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Floater : Enemy {
-    public float recoveryTime = 1.0f;
-
     new private void Update()
     {
         base.Update();
@@ -32,15 +30,7 @@ public class Floater : Enemy {
     internal override void OnDamage(Transform _target)
     {
         base.OnDamage(_target);
-        body.velocity = -body.velocity;
-        StartCoroutine(DamageTimeout());
-    }
-
-    IEnumerator DamageTimeout()
-    {
-        moveDisabled = true;
-        yield return new WaitForSeconds(recoveryTime);
-        moveDisabled = false;
+        body.velocity = -body.velocity * 1.5f;
     }
 
     internal override void OnDie()

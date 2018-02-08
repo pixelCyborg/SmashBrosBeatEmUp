@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Collectable : MonoBehaviour {
+public class Collectable : Interactable {
+    private static Player player;
     public Item item = new Item();
 
     void Start()
     {
+
         if (item.properties == null)
         {
             item.properties = new List<Property>();
@@ -27,13 +29,20 @@ public class Collectable : MonoBehaviour {
                 item.description += "-" + item.properties[i].type + " " + item.properties[i].power + "\n";
             }
         }
+
+        description = item.itemName;
+
+        if (player == null)
+        {
+            player = FindObjectOfType<Player>();
+        }
     }
 
-    void OnCollisionEnter2D(Collision2D other)
+    internal override void OnInteract()
     {
-        if (other.gameObject.tag == "Player" && this.enabled)
+        base.OnInteract();
+        if (this.enabled)
         {
-            Player player = other.gameObject.GetComponentInParent<Player>();
             if (player != null)
             {
                 player.PickUp(this);

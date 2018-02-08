@@ -3,53 +3,78 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Projectile : MonoBehaviour {
-    Rigidbody2D body;
-    public Potion potion;
+    internal Rigidbody2D body;
+    public List<Property> properties;
 
     //Use for properties
+    internal int damage = 1;
     private int bounces;
+    private bool grenade = false;
 
-    void Start()
+    public void Start()
     {
-        //potion = new Potion();
         body = GetComponent<Rigidbody2D>();
         bounces = 0;
     }
 
-    void OnCollisionEnter2D(Collision2D col)
+    public bool CheckImpact(Collision2D col)
 	{
+		if (CheckForProperty (Property.Type.Bouncy) > bounces) {
+			Bounce (col);
+            return true;
+		}
+
+        return false;
+    }
+
+    public void CheckExplosion(Collision2D col)
+    {
+        if (col.gameObject.layer == 1 << LayerMask.NameToLayer("Enemy"))
+        {
+            Explode();
+        }
+        else
+        {
+            Explode();
+        }
+
         if (CheckForProperty(Property.Type.Impact) > 0)
         {
             EffectDestructibles(col);
         }
 
-        if(CheckForProperty(Property.Type.Bouncy) > 0)
+        if (CheckForProperty(Property.Type.Bouncy) > 0)
         {
             AddBounceTiles(col);
         }
+    }
 
-		if (col.gameObject.layer == 1 << LayerMask.NameToLayer ("Enemy")) {
-			Explode ();
-		}
+    public void ApplyStatus(Enemy npc)
+    {
+        for (int i = 0; i < properties.Count; i++)
+        {
+            switch (properties[i].type)
+            {
+                case Property.Type.Fire:
+                    npc.gameObject.AddComponent<Burning>();
+                    break;
 
-		if (CheckForProperty (Property.Type.Bouncy) > bounces) {
-			Bounce (col);
-		} else {
-			Explode ();
-		}
-	}
+                case Property.Type.Ice:
+                    npc.gameObject.AddComponent<Frozen>();
+                    break;
+            }
+        }
+    }
 
-    public void Throw(Transform origin)
+    public void Throw(Transform origin, float throwForce = 15.0f)
 	{
-		if (potion == null)
-			potion = new Potion ();
 		if (body == null)
 			body = GetComponent<Rigidbody2D> ();
 
 		Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
         mouseWorldPos.z = origin.position.z;
 		body.AddTorque (Random.Range (-50, 50));
-		body.AddForce ((transform.position - (Vector3)mouseWorldPos).normalized, ForceMode2D.Impulse);
+		body.AddForce (((Vector3)mouseWorldPos - transform.position).normalized * throwForce, ForceMode2D.Impulse);
 	}
 
 
@@ -65,9 +90,8 @@ public class Projectile : MonoBehaviour {
             Enemy enemy = collisions[i].GetComponent<Enemy>();
             if (enemy != null)
             {
-				potion.ApplyStatus (enemy);
-                enemy.TakeDamage((int)potion.damage, transform.position);
-                //enemy.GetComponent<Rigidbody2D>().AddForce();
+				ApplyStatus (enemy);
+                enemy.TakeDamage(damage, transform.position);
             }
         }
     }
@@ -88,6 +112,8 @@ public class Projectile : MonoBehaviour {
 
     void AddBounceTiles(Collision2D collision)
     {
+        if (Bouncy.instance == null) return;
+
         Vector3[] collisions = GetTileWorldPositions(collision);
         for(int i = 0; i < collisions.Length; i++)
         {
@@ -110,11 +136,11 @@ public class Projectile : MonoBehaviour {
 
     private int CheckForProperty(Property.Type type)
     {
-        for (int i = 0; i < potion.properties.Length; i++)
+        for (int i = 0; i < properties.Count; i++)
         {
-            if (potion.properties[i].type == type)
+            if (properties[i].type == type)
             {
-                return potion.properties[i].power;
+                return properties[i].power;
             }
         }
 
@@ -123,14 +149,13 @@ public class Projectile : MonoBehaviour {
 
     void Bounce(Collision2D col)
     {
-        Debug.DrawLine((Vector2)transform.position, (Vector2)transform.position + col.relativeVelocity);
         body.AddForce(new Vector2(-col.relativeVelocity.x * 0.5f, col.relativeVelocity.y) * 0.8f , ForceMode2D.Impulse);
         bounces++;
     }
 
     IEnumerator _Explode()
     {
-        Collider2D[] collisions = Physics2D.OverlapCircleAll(transform.position, potion.blastRadius);
+        Collider2D[] collisions = Physics2D.OverlapCircleAll(transform.position, 8.0f);
         ExplosionDamage(collisions);
         GetComponent<ParticleSystem>().Play();
         body.constraints = RigidbodyConstraints2D.FreezeAll;

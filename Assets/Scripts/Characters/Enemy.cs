@@ -9,6 +9,7 @@ public class Enemy : MonoBehaviour {
     public int damage = 1;
     public float attackRange = 5.0f;
     public float detectionRadius = 8.0f;
+    public float recoveryTime = 0.8f;
     public ContactFilter2D groundFilter;
 
     //Shared general properties && components
@@ -86,10 +87,18 @@ public class Enemy : MonoBehaviour {
     {
         Player player = playerCol.GetComponent<Player>();
         Vector2 storedVel = body.velocity;
-        player.TakeDamage(damage, new Vector2(storedVel.x, 5));
+        player.TakeDamage(damage, new Vector2(storedVel.x, 10));
         body.velocity = Vector2.zero;
-        body.AddForce(new Vector2(-storedVel.x, 5), ForceMode2D.Impulse);
+        body.AddForce(new Vector2(-storedVel.x * 1.5f, 10), ForceMode2D.Impulse);
+        StartCoroutine(DamageTimeout());
         OnDamage(target);
+    }
+
+    IEnumerator DamageTimeout()
+    {
+        moveDisabled = true;
+        yield return new WaitForSeconds(recoveryTime);
+        moveDisabled = false;
     }
 
     //Check if player is within detection radius

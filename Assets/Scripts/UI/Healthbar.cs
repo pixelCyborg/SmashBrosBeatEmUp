@@ -67,6 +67,11 @@ public class Healthbar : MonoBehaviour {
                     if(lives[i] != null) lives[i].enabled = false;
                     if (uiLives[i] != null) uiLives[i].enabled = false;
                 }
+                else
+                {
+                    if (lives[i] != null) lives[i].enabled = true;
+                    if (uiLives[i] != null) uiLives[i].enabled = true;
+                }
             }
         }
         UpdateObjectPositions();

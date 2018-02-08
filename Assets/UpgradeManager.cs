@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class UpgradeManager : MonoBehaviour {
     Crossbow crossbow;
+
+    public ItemTile infusionDisplay;
+    public ItemTile leftInfusion;
+    public ItemTile rightInfusion;
+    private bool infusionSwitched = false;
+
     private List<ItemTile> upgradeTiles = new List<ItemTile>();
     private List<CrossbowUpgrade> currentUpgrades = new List<CrossbowUpgrade>();
 
@@ -23,7 +29,55 @@ public class UpgradeManager : MonoBehaviour {
                 currentUpgrades.Add(null);
             }
         }
+
+        leftInfusion.onSetItem += CheckCurrentInfusion;
+        rightInfusion.onSetItem += CheckCurrentInfusion;
 	}
+
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.Q))
+        {
+            ToggleCurrentInfusion();
+        }
+    }
+
+    public void ToggleCurrentInfusion()
+    {
+        infusionSwitched = !infusionSwitched;
+        CheckCurrentInfusion();
+    }
+
+    void CheckCurrentInfusion(Item item = null)
+    {
+        if (infusionSwitched)
+        {
+            SetInfusion(rightInfusion.item);
+        }
+        else
+        {
+            SetInfusion(leftInfusion.item);
+        }
+    }
+
+    void SetInfusion(Item item)
+    {
+        if (item == null)
+        {
+            RemoveInfusion();
+        }
+        else
+        {
+            crossbow.properties = item.properties;
+            infusionDisplay.SetItem(item);
+        }
+    }
+
+    void RemoveInfusion(Item item = null)
+    {
+        crossbow.properties = new List<Property>();
+        infusionDisplay.RemoveItem();
+    }
 
     void SetUpgrade(Item item)
     {
@@ -48,7 +102,7 @@ public class UpgradeManager : MonoBehaviour {
         switch (item.upgrade)
         {
             case CrossbowUpgrade.Upgrade.Multishot:
-                crossbow.gameObject.GetComponent<Multishot>().RemoveUpgrade();
+                crossbow.gameObject.GetComponent<Multishot>().RemoveUpgrade();  
                 break;
             case CrossbowUpgrade.Upgrade.Scope:
                 crossbow.gameObject.GetComponent<Scope>().RemoveUpgrade();
@@ -58,9 +112,4 @@ public class UpgradeManager : MonoBehaviour {
                 break;
         }
     }
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 }

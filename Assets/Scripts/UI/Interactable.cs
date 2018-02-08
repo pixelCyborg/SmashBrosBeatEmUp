@@ -11,14 +11,6 @@ public class Interactable : MonoBehaviour {
     internal virtual void OnSelect() { }
     internal virtual void OnDeselect() { }
 
-    private void Update()
-    {
-        if(selected && Input.GetKeyDown(KeyCode.W))
-        {
-            OnInteract();
-        }
-    }
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (!interactable) return;

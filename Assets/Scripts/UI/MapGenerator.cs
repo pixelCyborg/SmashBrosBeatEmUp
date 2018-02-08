@@ -57,6 +57,7 @@ public class MapGenerator : MonoBehaviour {
     public bool useRandomSeed;
     private Room[] rooms;
     public bool flattenRooms;
+    private Coord playerStart;
 
     private const int MAX_JUMPABLE_HEIGHT = 3;
     private const int MAX_JUMPABLE_GAP = 8;
@@ -460,6 +461,7 @@ public class MapGenerator : MonoBehaviour {
     void PlacePlayerAtStart()
     {
         Coord startPoint = BestStartPoint();
+        playerStart = startPoint;
         Player player = FindObjectOfType<Player>();
         if (player == null) return;
 
@@ -574,7 +576,8 @@ public class MapGenerator : MonoBehaviour {
     {
         foreach(Coord coord in room.edgeTiles)
         {
-            if (IsFloorTile(coord.x, coord.y - 1) && IsFloorTile(coord.x - 1, coord.y - 1) && IsFloorTile(coord.x + 1, coord.y - 1))
+            if (IsFloorTile(coord.x, coord.y - 1) && IsFloorTile(coord.x - 1, coord.y - 1) && IsFloorTile(coord.x + 1, coord.y - 1) 
+                && Vector2.Distance(CoordToWorldPoint(coord), CoordToWorldPoint(playerStart)) > 15)
             {
                 if (UnityEngine.Random.Range(0, 100) > 100 - enemySpawnRate)
                 {
@@ -587,7 +590,8 @@ public class MapGenerator : MonoBehaviour {
         {
             if(NoNeighboringTiles(coord.x, coord.y))
             {
-                if(UnityEngine.Random.Range(0, 100) > 100 - (enemySpawnRate * 0.2f))
+                if (UnityEngine.Random.Range(0, 100) > 100 - (enemySpawnRate * 0.1f) 
+                    && Vector2.Distance(CoordToWorldPoint(coord), CoordToWorldPoint(playerStart)) > 15)
                 {
                     Instantiate(floaterEnemy, CoordToWorldPoint(coord), Quaternion.identity, enemyParent);
                 }

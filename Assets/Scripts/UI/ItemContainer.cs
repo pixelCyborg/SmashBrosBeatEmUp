@@ -14,6 +14,8 @@ public class ItemContainer : Interactable {
 
         if (opened) return;
         opened = true;
+        interactable = false;
+        InteractionSelector.Deselect();
         for(int i = Random.Range(minDrops, maxDrops) - 1; i >= 0; i--)
         {
             SpawnItem(RollItem());
