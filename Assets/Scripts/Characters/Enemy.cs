@@ -138,6 +138,7 @@ public class Enemy : MonoBehaviour {
         {
             dead = true;
             moveDisabled = true;
+			GetComponentInChildren<MinimapIcon> ().DisableIcon ();
             OnDie();
 
             body.constraints = RigidbodyConstraints2D.None;
@@ -178,4 +179,4 @@ public class Enemy : MonoBehaviour {
             coinBody.AddForce(((Vector2)transform.position - (Vector2)enemyPos).normalized * 5, ForceMode2D.Impulse);
         }
     }
-}
+} 
