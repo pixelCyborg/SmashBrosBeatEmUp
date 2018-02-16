@@ -149,7 +149,8 @@ public class Projectile : MonoBehaviour {
 
     void Bounce(Collision2D col)
     {
-        body.AddForce(new Vector2(-col.relativeVelocity.x * 0.5f, col.relativeVelocity.y) * 0.8f , ForceMode2D.Impulse);
+        //Let the physics material do the work
+        //body.velocity = -2 * (Vector2.Dot(body.velocity, col.contacts[0].normal) * col.contacts[0].normal + body.velocity);
         bounces++;
     }
 

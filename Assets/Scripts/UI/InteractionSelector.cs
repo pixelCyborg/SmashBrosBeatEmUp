@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class InteractionSelector : MonoBehaviour
 {
+    private static List<Transform> targetQueue;
     private static Transform target;
     private static SpriteRenderer targetSprite;
     private static SpriteRenderer rend;
@@ -14,6 +15,7 @@ public class InteractionSelector : MonoBehaviour
 
     private void Start()
     {
+        targetQueue = new List<Transform>();
         rend = GetComponent<SpriteRenderer>();
         glow = GetComponent<SpriteGlow.SpriteGlow>();
         interactionText = GetComponentInChildren<TextMesh>();
@@ -30,7 +32,7 @@ public static void Select(Transform newTarget, string text = "")
         {
             interactionText.text = text;
             interactionText.transform.localPosition = Vector3.up * targetSprite.bounds.extents.y * 1f;
-            //interactionText.transform.rotation = targetSprite.transform.rotation;
+
         }
     }
 

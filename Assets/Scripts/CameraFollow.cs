@@ -6,7 +6,9 @@ public class CameraFollow : MonoBehaviour {
 	public float speed = 4.0f;
     public float zoomSpeed = 2.0f;
     public float maxZoom = 10.0f;
+    public float minZoom = 4.0f;
     private static float MaxZoom;
+    private static float MinZoom;
 	private static Transform target;
     private static Transform defaultTarget;
 	private Vector3 offset = new Vector3(0, 0, -5);
@@ -19,6 +21,7 @@ public class CameraFollow : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         MaxZoom = maxZoom;
+        MinZoom = minZoom;
         cam = GetComponentInChildren<Camera>();
         defaultZoom = cam.orthographicSize;
         targetZoom = defaultZoom;
@@ -48,11 +51,7 @@ public class CameraFollow : MonoBehaviour {
 
         targetZoom *= 1.2f;
         if (targetZoom > MaxZoom) targetZoom = MaxZoom;
-
-        /*targetZoom = (col.transform.localScale.x > col.transform.localScale.y ?
-            col.transform.localScale.x : 
-            col.transform.localScale.y) 
-            * 0.5f;*/
+        else if (targetZoom < MinZoom) targetZoom = MinZoom;
 
         target = col.transform;
     }
@@ -69,8 +68,11 @@ public class CameraFollow : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		if (target == null)
-			return;
+        if (target == null)
+        {
+            target = GameObject.FindGameObjectWithTag("Player").transform;
+            return;
+        }
 
         Vector3 reticlePos = cam.ScreenToWorldPoint(Input.mousePosition);
         reticlePos.z = 0;

@@ -8,11 +8,14 @@ public class Skeleton : Enemy {
     public float lungeWindup = 0.8f;
     public Vector2 lungeForce;
     Vector2 prevDistance;
+    float xVel;
 
     internal override void Attack(Transform target)
     {
         base.Attack(target);
         if (!lungeReady) return;
+        if (target.position.y > transform.position.y + 5) return;
+
         StartCoroutine(_Lunge());
     }
 
@@ -31,7 +34,7 @@ public class Skeleton : Enemy {
                 Physics2D.OverlapBox((Vector2)transform.position + (Vector2.right * 0.5f * transform.localScale.x) - Vector2.up * 0.8f,
                     new Vector2(0.1f, 0.1f), 0, groundFilter, results) == 0)
             {
-                transform.localScale = new Vector2(-transform.localScale.x, transform.localScale.y);
+                transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y, 0);
                 facingRight = !facingRight;
             }
         }
@@ -42,23 +45,24 @@ public class Skeleton : Enemy {
         base.PursueTarget(target);
         if (grounded)
         {
-            if (lungeReady && Physics2D.OverlapBox((Vector2)transform.position + (Vector2.right * 0.5f * transform.localScale.x), new Vector2(0.1f, 0.5f), 0, groundFilter, results) > 0)
+            if (lungeReady && (Physics2D.OverlapBox((Vector2)transform.position + (Vector2.right * 1.5f * transform.localScale.x), new Vector2(1f, 0.5f), 0, groundFilter, results) > 0 
+                || target.position.y > transform.position.y + 5))
             {
                 StartCoroutine(Jump());
             }
 
-            if (target.position.x - transform.position.x < 0 && facingRight)
+            if (target.position.x - transform.position.x < -0.5f && facingRight)
             {
-                transform.localScale = new Vector2(-transform.localScale.x, transform.localScale.y);
+                transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, 1);
                 facingRight = !facingRight;
             }
-            else if (target.position.x - transform.position.x > 0 && !facingRight)
+            else if (target.position.x - transform.position.x > 0.5f && !facingRight)
             {
-                transform.localScale = new Vector2(-transform.localScale.x, transform.localScale.y);
+                transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, 1);
                 facingRight = !facingRight;
             }
             
-            if(Vector2.Distance(transform.position, target.position) > 4)
+            if(Vector2.Distance(transform.position, target.position) > 4 && lungeReady)
                 body.velocity = Vector2.right * moveSpeed * (facingRight ? 1.5f : -1.5f);
         }
     }
@@ -66,32 +70,36 @@ public class Skeleton : Enemy {
     private IEnumerator Jump()
     {
         lungeReady = false;
-        yield return new WaitForSeconds(lungeWindup);
+        body.AddForce(new Vector2(0, lungeForce.y * 2f), ForceMode2D.Impulse);
 
-        body.AddForce(new Vector2(lungeForce.x * transform.localScale.x * 0.5f, lungeForce.y * 3.0f), ForceMode2D.Impulse);
         int timeoutIndex = 0;
+        Vector3 vel = body.velocity;
         while (grounded)
         {
             timeoutIndex++;
             if (timeoutIndex > 300) break;
             yield return new WaitForEndOfFrame();
+            vel = body.velocity;
+            vel.x = moveSpeed * transform.localScale.x;
+            body.velocity = vel;
         }
         while (!grounded)
         {
             timeoutIndex++;
             if (timeoutIndex > 300) break;
             yield return new WaitForEndOfFrame();
+            vel = body.velocity;
+            vel.x = moveSpeed * transform.localScale.x;
+            body.velocity = vel;
         }
-        yield return new WaitForSeconds(lungeWindup * 2);
+        yield return new WaitForSeconds(lungeWindup);
         lungeReady = true;
     }
 
     private IEnumerator _Lunge()
     {
         lungeReady = false;
-        //moveDisabled = true;
         yield return new WaitForSeconds(lungeWindup);
-
         body.AddForce(new Vector2(lungeForce.x * transform.localScale.x, lungeForce.y), ForceMode2D.Impulse);
         int timeoutIndex = 0;
         while (grounded)
@@ -106,8 +114,6 @@ public class Skeleton : Enemy {
             if (timeoutIndex > 300) break;
             yield return new WaitForEndOfFrame();
         }
-        //moveDisabled = false;
-        yield return new WaitForSeconds(lungeWindup * 2);
         lungeReady = true;
     }
 }

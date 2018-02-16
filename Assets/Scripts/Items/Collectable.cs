@@ -38,9 +38,8 @@ public class Collectable : Interactable {
         }
     }
 
-    internal override void OnInteract()
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        base.OnInteract();
         if (this.enabled)
         {
             if (player != null)

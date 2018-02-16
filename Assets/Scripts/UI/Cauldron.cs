@@ -80,6 +80,7 @@ public class Cauldron : MonoBehaviour {
         {
             item.potion = new Potion();
             item.potion.properties = potProperties.ToArray();
+            item.properties = potProperties;
             for (int i = 0; i < item.potion.properties.Length; i++)
             {
                 item.description += "-" + item.potion.properties[i].type + " " + item.potion.properties[i].power + "\n";

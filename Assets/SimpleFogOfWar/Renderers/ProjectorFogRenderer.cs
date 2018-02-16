@@ -20,6 +20,7 @@ namespace SimpleFogOfWar.Renderers
 
         protected override void Initialize(FogOfWarSystem source, Texture displayTexture)
         {
+            Debug.Log("Initialize Fog!");
             projector = new GameObject("FogProjector").AddComponent<Projector>();
             projector.transform.parent = source.transform;
             projector.transform.localPosition = source.transform.position + new Vector3(source.Size * 0.5f, clipTop, source.Size * 0.5f);
@@ -29,6 +30,7 @@ namespace SimpleFogOfWar.Renderers
             projector.transform.localRotation = Quaternion.Euler(90, 0, 0);
             projector.material = new Material(Shader.Find("Hidden/FOWProjectorShader")) { mainTexture = displayTexture };
             projector.gameObject.hideFlags = HideFlags.HideAndDontSave;
+            Debug.Log(projector.gameObject);
         }
 
         public override void SetColor(Color value)

@@ -170,11 +170,12 @@ public class MapGenerator : MonoBehaviour {
         ProcessMap();
         FindLadders();
         FindPlatforms();
+
+        PlacePlayerAtStart();
         PlaceEnemies();
 
         PaintMapTiles();
 
-        PlacePlayerAtStart();
         PlaceDoorAtExit();
     }
 

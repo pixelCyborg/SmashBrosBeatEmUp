@@ -22,7 +22,7 @@ public class Floater : Enemy {
         if (Physics2D.OverlapBox((Vector2)transform.position + (Vector2.right * 0.5f * transform.localScale.x),
                 new Vector2(0.1f, 0.5f), 0, groundFilter, results) > 0)
         {
-            transform.localScale = new Vector2(-transform.localScale.x, transform.localScale.y);
+            transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, 1);
             facingRight = !facingRight;
         }
     }

@@ -20,9 +20,9 @@ namespace SimpleFogOfWar.Renderers
             displayMesh.SetVertices(new List<Vector3>
             {
                 new Vector3(0, 0, 0),
-                new Vector3(size, 0, 0),
-                new Vector3(size, 0, size),
-                new Vector3(0, 0, size)
+                new Vector3(0, size, 0),
+                new Vector3(size, size, 0),
+                new Vector3(size, 0, 0)
             });
             displayMesh.uv = new[]
             {
