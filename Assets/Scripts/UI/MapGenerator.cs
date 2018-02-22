@@ -600,6 +600,12 @@ public class MapGenerator : MonoBehaviour {
         }
     }
 
+	void PlaceChest() {
+		Room targetRoom = rooms[UnityEngine.Random.Range (0, rooms.Length - 1)];
+		 
+
+	}
+
     void SmoothMap()
     {
         for (int x = 0; x < width; x++)
