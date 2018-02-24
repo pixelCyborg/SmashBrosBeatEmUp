@@ -45,6 +45,7 @@ public class MapGenerator : MonoBehaviour {
     public Transform enemyParent;
     public GameObject skeletonEnemy;
     public GameObject floaterEnemy;
+    public GameObject wizardEnemy;
 
     int[,] map;
     List<Ladder> ladders;
@@ -580,14 +581,26 @@ public class MapGenerator : MonoBehaviour {
             if (IsFloorTile(coord.x, coord.y - 1) && IsFloorTile(coord.x - 1, coord.y - 1) && IsFloorTile(coord.x + 1, coord.y - 1) 
                 && Vector2.Distance(CoordToWorldPoint(coord), CoordToWorldPoint(playerStart)) > 15)
             {
-                if (UnityEngine.Random.Range(0, 100) > 100 - enemySpawnRate)
+                if (UnityEngine.Random.Range(0, 100) > 100 - (enemySpawnRate * 0.66f))
                 {
                     Instantiate(skeletonEnemy, CoordToWorldPoint(coord) + Vector3.up * 0.5f, Quaternion.identity, enemyParent);
                 }
             }
         }
 
-        foreach(Coord coord in room.tiles)
+        foreach (Coord coord in room.edgeTiles)
+        {
+            if (IsFloorTile(coord.x, coord.y - 1) && IsFloorTile(coord.x - 1, coord.y - 1) && IsFloorTile(coord.x + 1, coord.y - 1)
+                && Vector2.Distance(CoordToWorldPoint(coord), CoordToWorldPoint(playerStart)) > 15)
+            {
+                if (UnityEngine.Random.Range(0, 100) > 100 - (enemySpawnRate * 0.66f))
+                {
+                    Instantiate(wizardEnemy, CoordToWorldPoint(coord) + Vector3.up * 0.5f, Quaternion.identity, enemyParent);
+                }
+            }
+        }
+
+        foreach (Coord coord in room.tiles)
         {
             if(NoNeighboringTiles(coord.x, coord.y))
             {

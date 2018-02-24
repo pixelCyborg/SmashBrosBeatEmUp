@@ -36,7 +36,7 @@ public class Enemy : MonoBehaviour {
     internal virtual void OnDie() { }
 
 	// Use this for initialization
-	void Start () {
+	internal void Start () {
 		bodyCol = GetComponent<Collider2D> ();
         playerCol = FindObjectOfType<Player>().GetComponent<Collider2D>();
         body = GetComponent<Rigidbody2D>();
@@ -122,11 +122,15 @@ public class Enemy : MonoBehaviour {
     }
 
     //Update healthbar and temp disable movement when taking damage
-	public void TakeDamage(int damage, Vector2 enemyPos) {
+	public void TakeDamage(int damage, Vector2 enemyPos, Transform origin = null) {
 		health -= damage;
         healthbar.SetLifeCount(health);
         body.velocity = Vector3.zero;
 		body.AddForce (((Vector2)transform.position - (Vector2)enemyPos) * 5 * damage, ForceMode2D.Impulse);
+        if (origin != null)
+        {
+            target = origin;
+        }
 		StartCoroutine (_TakeDamage (damage, enemyPos));
 	}
 

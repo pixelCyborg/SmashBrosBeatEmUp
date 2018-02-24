@@ -4,11 +4,11 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class LocationBase : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler {
+public class LocationBase : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler {
 	[SerializeField]
-	public string description = "";
 	internal bool interactable = true;
 	private bool selected = false;
+    public Vector2 location;
 
 	public void OnPointerEnter (PointerEventData eventData)
 	{
@@ -17,7 +17,7 @@ public class LocationBase : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 			return;
 
 		selected = true;
-		MapSelector.Select (transform, description);
+		MapSelector.Select (transform, GetLabels(), GetDescription());
 	}
 
 	public void OnPointerExit (PointerEventData eventData)
@@ -30,8 +30,13 @@ public class LocationBase : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 		MapSelector.Deselect ();
 	}
 
-	public void OnPointerClick (PointerEventData eventData)
-	{
-		//base.OnPointerClick (eventData);
-	}
+    internal virtual string GetDescription()
+    {
+        return "";
+    } 
+
+    internal virtual string GetLabels()
+    {
+        return "";
+    }
 }

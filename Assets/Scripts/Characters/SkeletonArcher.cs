@@ -3,34 +3,44 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class SkeletonArcher : Skeleton {
-	private bool CanShoot = false;
+	private bool canShoot = true;
 	public GameObject boltPrefab;
 	public float reloadTime;
 	public float boltSpeed;
 
+    internal override void Attack(Transform target)
+    {
+        Vector2 direction = (target.position - transform.position).normalized;
+        direction *= boltSpeed;
 
-	internal override void Attack (Transform target)
-	{
-		Vector2 direction = (target.position - transform.position).normalized;
-		direction *= boltSpeed;
-		Shoot (direction.x, direction.y);
-	}
+        if (canShoot)
+        {
+            Shoot(direction.x, direction.y);
+            Reload();
+        }
+    }
 
-	void Reload()
+ /*   internal override void PursueTarget(Transform target)
+    {
+        base.Move();
+        //base.PursueTarget(target);
+    } */
+
+    void Reload()
 	{
 		StartCoroutine(_Reload());
 	}
 
 	IEnumerator _Reload()
 	{
-		CanShoot = false;
+		canShoot = false;
 		yield return new WaitForSeconds(reloadTime);
-		CanShoot = true;
+		canShoot = true;
 	}
 
 	public void Shoot(float x, float y)
 	{
-		CrossbowBolt bolt = Instantiate(boltPrefab, transform.position, Quaternion.identity).GetComponent<CrossbowBolt>();
+		SkeletonFireball bolt = Instantiate(boltPrefab, transform.position, Quaternion.identity).GetComponent<SkeletonFireball>();
 		bolt.Shoot(x, y, damage);
 	}
 }

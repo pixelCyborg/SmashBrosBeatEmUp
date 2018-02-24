@@ -36,10 +36,10 @@ public class SkeletonFireball : Projectile {
 
 		if (collision.transform.tag == "Player")
 		{
-			Enemy enemy = collision.gameObject.GetComponent<Enemy>();
-			if(enemy != null)
+			Player player = collision.gameObject.GetComponent<Player>();
+			if(player != null)
 			{
-				enemy.TakeDamage(damage, transform.position);
+                player.TakeDamage(damage, transform.position);
 			}
 			Destroy(gameObject);
 		}

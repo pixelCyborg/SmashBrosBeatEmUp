@@ -34,7 +34,7 @@ public class Skeleton : Enemy {
                 Physics2D.OverlapBox((Vector2)transform.position + (Vector2.right * 0.5f * transform.localScale.x) - Vector2.up * 0.8f,
                     new Vector2(0.1f, 0.1f), 0, groundFilter, results) == 0)
             {
-                transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y, 0);
+                transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, 1);
                 facingRight = !facingRight;
             }
         }
@@ -45,25 +45,24 @@ public class Skeleton : Enemy {
         base.PursueTarget(target);
         if (grounded)
         {
-            if (lungeReady && (Physics2D.OverlapBox((Vector2)transform.position + (Vector2.right * 1.5f * transform.localScale.x), new Vector2(1f, 0.5f), 0, groundFilter, results) > 0 
-                || target.position.y > transform.position.y + 5))
-            {
-                StartCoroutine(Jump());
-            }
-
             if (target.position.x - transform.position.x < -0.5f && facingRight)
             {
                 transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, 1);
                 facingRight = !facingRight;
+                body.velocity = Vector2.right * moveSpeed * (facingRight ? 1.5f : -1.5f);
             }
             else if (target.position.x - transform.position.x > 0.5f && !facingRight)
             {
                 transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, 1);
                 facingRight = !facingRight;
-            }
-            
-            if(Vector2.Distance(transform.position, target.position) > 4 && lungeReady)
                 body.velocity = Vector2.right * moveSpeed * (facingRight ? 1.5f : -1.5f);
+            }
+
+            if (lungeReady && (Physics2D.OverlapBox((Vector2)transform.position + (Vector2.right * 1.5f * transform.localScale.x), new Vector2(1f, 0.5f), 0, groundFilter, results) > 0
+                || target.position.y > transform.position.y + 5))
+            {
+                StartCoroutine(Jump());
+            }
         }
     }
 

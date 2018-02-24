@@ -31,7 +31,7 @@ public class Crossbow : MonoBehaviour {
 
     public void FireCrossbow()
     {
-        if (CanShoot && !Inventory.open)
+        if (CanShoot && !Inventory.open && !TravelMap.mapShown)
         {
 
             /*
