@@ -59,14 +59,13 @@ public class Inventory : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		if(Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyUp(KeyCode.Escape))
         {
-            if (group.alpha == 0) {
-                ToggleOn();
-            }
-            else
+            if (group.alpha >= 0.9f)
             {
-                ToggleOff();
+                {
+                    ToggleOff();
+                }
             }
         }
 
@@ -82,6 +81,18 @@ public class Inventory : MonoBehaviour {
             }
         }
 	}
+
+    public void Toggle()
+    {
+        if (group.alpha >= 0.9f)
+        {
+            ToggleOff();
+        }
+        else
+        {
+            ToggleOn();
+        }
+    }
 
     public static void AddCoin(int amount = 1)
     {
@@ -159,14 +170,14 @@ public class Inventory : MonoBehaviour {
         hotbar.UpdateHotbar();
     }
 
-    void ToggleOn() {
+    public void ToggleOn() {
         group.alpha = 1;
         group.interactable = true;
         group.blocksRaycasts = true;
         open = true;
     }
 
-    void ToggleOff()
+    public void ToggleOff()
     {
         group.alpha = 0;
         group.interactable = false;

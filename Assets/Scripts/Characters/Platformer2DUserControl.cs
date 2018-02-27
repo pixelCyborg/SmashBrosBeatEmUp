@@ -30,6 +30,11 @@ public class Platformer2DUserControl : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (Inventory.open)
+        {
+            m_Character.Move(0, 0, false, false);
+            return;
+        }
         // Read the inputs.
         bool crouch = Input.GetKey(KeyCode.LeftControl);
         float h = Input.GetAxis("Horizontal");

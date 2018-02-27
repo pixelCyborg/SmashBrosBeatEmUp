@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Crossbow : MonoBehaviour {
+    Transform origin;
     public List<CrossbowUpgrade> upgrades = new List<CrossbowUpgrade>();
     public GameObject boltPrefab;
     public static Crossbow instance;
@@ -15,6 +16,7 @@ public class Crossbow : MonoBehaviour {
 
     private void Start()
     {
+        origin = GetComponentInParent<Player>().transform;
         instance = this;
         properties = new List<Property>();
     }
@@ -86,6 +88,6 @@ public class Crossbow : MonoBehaviour {
     {
         CrossbowBolt bolt = Instantiate(instance.boltPrefab, instance.transform.position, Quaternion.identity).GetComponent<CrossbowBolt>();
         bolt.properties = properties;
-        bolt.Shoot(x, y, damage);
+        bolt.Shoot(x, y, origin, damage);
     }
 }

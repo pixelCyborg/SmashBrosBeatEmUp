@@ -6,6 +6,7 @@ using UnityEditor;
 #endif
 
 public class TravelMap : MonoBehaviour {
+    public static TravelMap instance;
     private List<Town> towns;
     private List<Contract> contracts;
 
@@ -26,6 +27,8 @@ public class TravelMap : MonoBehaviour {
 	void Start() {
 		groupComponent = GetComponent<CanvasGroup> ();
 		mapShown = true;
+        instance = this;
+
 		Toggle ();
 
         towns = new List<Town>();
@@ -38,7 +41,7 @@ public class TravelMap : MonoBehaviour {
 		}
 	}
 
-	void Toggle() {
+	public void Toggle() {
 		if (mapShown) {
 			mapShown = false;
 			groupComponent.alpha = 0;

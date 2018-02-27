@@ -5,8 +5,10 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class CanvasManager : MonoBehaviour {
+    public static bool paused;
     public static CanvasManager instance;
     public GameObject gameOverScreen;
+    public GameObject pauseScreen;
 
     private void Start()
     {
@@ -16,9 +18,9 @@ public class CanvasManager : MonoBehaviour {
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Escape))
+        if(Input.GetKeyDown(KeyCode.Escape) && !Inventory.open)
         {
-            gameOverScreen.SetActive(!gameOverScreen.activeSelf);
+            pauseScreen.SetActive(!pauseScreen.activeSelf);
         }
     }
 

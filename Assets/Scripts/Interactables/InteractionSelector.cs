@@ -53,7 +53,7 @@ public static void Select(Transform newTarget, string text = "")
             transform.position = target.position;
             transform.localScale = target.localScale;
 
-            if (Input.GetKeyDown(KeyCode.W))
+            if (!CanvasManager.paused && Input.GetKeyDown(KeyCode.W))
             {
                 target.GetComponent<Interactable>().OnInteract();
             }

@@ -123,6 +123,7 @@ public class Enemy : MonoBehaviour {
 
     //Update healthbar and temp disable movement when taking damage
 	public void TakeDamage(int damage, Vector2 enemyPos, Transform origin = null) {
+        if (health <= 0) return;
 		health -= damage;
         healthbar.SetLifeCount(health);
         body.velocity = Vector3.zero;
@@ -173,7 +174,7 @@ public class Enemy : MonoBehaviour {
 
     void DropCoins(Vector2 enemyPos)
     {
-        int coins = Random.Range(5, 10);
+        int coins = Random.Range(0, 5);
         for (int i = 0; i < coins; i++)
         {
             GameObject coin = Instantiate(coinPrefab, transform.position, coinPrefab.transform.rotation);

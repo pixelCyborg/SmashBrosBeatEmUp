@@ -12,7 +12,7 @@ public class SkeletonFireball : Projectile {
 	private void Update()
 	{
 		Vector2 v = body.velocity;
-		float angle = Mathf.Atan2(v.y, v.x) * Mathf.Rad2Deg - 90.0f;
+        float angle = Mathf.Atan2(v.y, v.x) * Mathf.Rad2Deg;
 		transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 	}
 
@@ -21,7 +21,7 @@ public class SkeletonFireball : Projectile {
 		damage = _damage;
 		body = GetComponent<Rigidbody2D>();
 		StartCoroutine(StartTimeout());
-		body.AddForce(new Vector2(x, y).normalized * Crossbow.instance.boltSpeed, ForceMode2D.Impulse);
+		body.AddForce(new Vector2(x, y), ForceMode2D.Impulse);
 	}
 
 	IEnumerator StartTimeout()
@@ -39,7 +39,7 @@ public class SkeletonFireball : Projectile {
 			Player player = collision.gameObject.GetComponent<Player>();
 			if(player != null)
 			{
-                player.TakeDamage(damage, transform.position);
+                player.TakeDamage(damage, body.velocity);
 			}
 			Destroy(gameObject);
 		}

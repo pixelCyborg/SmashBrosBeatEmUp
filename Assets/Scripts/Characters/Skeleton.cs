@@ -14,7 +14,7 @@ public class Skeleton : Enemy {
     {
         base.Attack(target);
         if (!lungeReady) return;
-        if (target.position.y > transform.position.y + 5) return;
+        if (target.position.y > transform.position.y + 2) return;
 
         StartCoroutine(_Lunge());
     }

@@ -39,6 +39,7 @@ public class MapGenerator : MonoBehaviour {
 
     [Header("Interactables")]
     public GameObject doorObject;
+    public GameObject chestPrefab;
     public Transform interactableParent;
 
     [Header("Enemies")]
@@ -92,8 +93,11 @@ public class MapGenerator : MonoBehaviour {
     [Range(0.0f, 1.0f)]
     public float groundProximityRatio = 0.33f;
 
+    [Header("Spawn Rates")]
     [Range(0.0f, 100.0f)]
     public float enemySpawnRate = 20.0f;
+    [Range(0.0f, 100.0f)]
+    public float chestChancePerRoom = 15.0f;
 
     struct Coord : IEquatable<Coord>, IComparable<Coord>
     {
@@ -161,6 +165,8 @@ public class MapGenerator : MonoBehaviour {
     public void GenerateMap()
     {
         map = new int[width, height];
+
+        ClearMap();
         RandomFillMap();
 
         for (int i = 0; i < smoothIterations; i++)
@@ -174,10 +180,19 @@ public class MapGenerator : MonoBehaviour {
 
         PlacePlayerAtStart();
         PlaceEnemies();
+        PlaceChests();
 
         PaintMapTiles();
 
         PlaceDoorAtExit();
+    }
+
+    private void ClearMap()
+    {
+        for (int i = interactableParent.childCount - 1; i >= 0; i--)
+        {
+            DestroyImmediate(interactableParent.GetChild(i).gameObject);
+        }
     }
 
     //Map Flags =========================
@@ -472,11 +487,6 @@ public class MapGenerator : MonoBehaviour {
 
     void PlaceDoorAtExit()
     {
-        for(int i = interactableParent.childCount - 1; i >= 0; i--)
-        {
-            Destroy(interactableParent.GetChild(i).gameObject);
-        }
-
         Coord exitPoint = BestExitPoint();
         GameObject door = (GameObject)Instantiate(doorObject, CoordToWorldPoint(exitPoint) - Vector3.up * 0.6f, Quaternion.identity, interactableParent);
         door.GetComponent<Door>().targetScene = "Camp";
@@ -613,10 +623,20 @@ public class MapGenerator : MonoBehaviour {
         }
     }
 
-	void PlaceChest() {
-		Room targetRoom = rooms[UnityEngine.Random.Range (0, rooms.Length - 1)];
-		 
+	void PlaceChests() {
+		foreach(Room room in rooms)
+        {
+            if(UnityEngine.Random.Range(0f, 100f) < chestChancePerRoom)
+            {
+                Coord targetTile = room.edgeTiles[UnityEngine.Random.Range(0, room.edgeTiles.Count)];
+                while(!IsFloorTile(targetTile.x, targetTile.y - 1))
+                {
+                    targetTile = room.edgeTiles[UnityEngine.Random.Range(0, room.edgeTiles.Count)];
+                }
 
+                Instantiate(chestPrefab, CoordToWorldPoint(targetTile), Quaternion.identity, interactableParent);
+            }
+        }
 	}
 
     void SmoothMap()

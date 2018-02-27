@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class CrossbowBolt : Projectile {
+    Transform origin;
+
     new private void Start()
     {
         base.Start();
@@ -16,7 +18,7 @@ public class CrossbowBolt : Projectile {
         transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
     }
 
-    public void Shoot(float x, float y, int _damage = 1)
+    public void Shoot(float x, float y, Transform _origin, int _damage = 1)
     {
         damage = _damage;
         body = GetComponent<Rigidbody2D>();
@@ -39,7 +41,7 @@ public class CrossbowBolt : Projectile {
             Enemy enemy = collision.gameObject.GetComponent<Enemy>();
             if(enemy != null)
             {
-                enemy.TakeDamage(damage, transform.position);
+                enemy.TakeDamage(damage, transform.position, origin);
             }
             Destroy(gameObject);
         }
