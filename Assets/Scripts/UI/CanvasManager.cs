@@ -51,6 +51,7 @@ public class CanvasManager : MonoBehaviour {
 
         //Load the hub
         SceneManager.LoadScene("Hub", LoadSceneMode.Additive);
+        LightingManager.instance.ToggleDarkness(false);
         HideGameOver();
         Player.instance.Reset();
     }

@@ -8,6 +8,9 @@ public class SkeletonArcher : Skeleton {
 	public float reloadTime;
 	public float boltSpeed;
 
+    //For prototype sprite;
+    public GameObject hat;
+
     internal override void Attack(Transform target)
     {
         Vector2 direction = (target.position - transform.position).normalized;
@@ -43,4 +46,10 @@ public class SkeletonArcher : Skeleton {
 		SkeletonFireball bolt = Instantiate(boltPrefab, transform.position, Quaternion.identity).GetComponent<SkeletonFireball>();
 		bolt.Shoot(x, y, damage);
 	}
+
+    internal override void OnDie()
+    {
+        base.OnDie();
+        Destroy(hat);
+    }
 }

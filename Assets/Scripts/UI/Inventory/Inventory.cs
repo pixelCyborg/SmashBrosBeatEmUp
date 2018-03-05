@@ -59,6 +59,11 @@ public class Inventory : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+        if(Input.GetKeyUp(KeyCode.E))
+        {
+            Toggle();
+        }
+
         if (Input.GetKeyUp(KeyCode.Escape))
         {
             if (group.alpha >= 0.9f)
@@ -82,7 +87,7 @@ public class Inventory : MonoBehaviour {
         }
 	}
 
-    public void Toggle()
+    public void Toggle(bool expanded = false)
     {
         if (group.alpha >= 0.9f)
         {
@@ -90,7 +95,7 @@ public class Inventory : MonoBehaviour {
         }
         else
         {
-            ToggleOn();
+            ToggleOn(expanded);
         }
     }
 
@@ -170,11 +175,12 @@ public class Inventory : MonoBehaviour {
         hotbar.UpdateHotbar();
     }
 
-    public void ToggleOn() {
+    public void ToggleOn(bool expanded) {
         group.alpha = 1;
         group.interactable = true;
         group.blocksRaycasts = true;
         open = true;
+        Cauldron.instance.gameObject.SetActive(expanded);
     }
 
     public void ToggleOff()

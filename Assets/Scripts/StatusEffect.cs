@@ -6,6 +6,8 @@ public abstract class StatusEffect : MonoBehaviour {
 	internal Player player;
 	internal Enemy npc;
 	internal float startTime;
+    internal GameObject visual;
+    internal int tickIndex = 0;
 
 	internal SpriteRenderer sprite;
 	internal Color origColor;
@@ -27,6 +29,8 @@ public abstract class StatusEffect : MonoBehaviour {
 			sprite = GetComponentInChildren<SpriteRenderer> ();
 			origColor = sprite.color;
 		}
+
+        OnBegin();
 	}
 
 	IEnumerator _Tick() {
@@ -40,9 +44,16 @@ public abstract class StatusEffect : MonoBehaviour {
 			}
 			//Otherwise run the regular tick method
 			OnTick ();
+            tickIndex++;
 			yield return new WaitForSeconds (tickRate);
 		}
 	}
+
+    public void End()
+    {
+        OnEnd();
+        Destroy(this);
+    }
 
 	internal void SetColor(Color color) {
 		if (sprite == null)
@@ -66,10 +77,13 @@ public abstract class StatusEffect : MonoBehaviour {
 //FIRE
 public class Burning : StatusEffect {
 	public override void OnBegin() {
-		SetColor (Color.red);
+        visual = Instantiate(Resources.Load("Particles/FireEffect"), npc.transform) as GameObject;
+        visual.transform.localPosition = Vector3.up;
 	}
 
 	public override void OnTick() {
+        if (tickIndex == 0) return;
+
 		if(player != null) {
 			Player.Health -= (int)power;
 		}
@@ -80,6 +94,7 @@ public class Burning : StatusEffect {
 	}
 
 	public override void OnEnd() {
+        Destroy(visual);
 		ResetColor ();
 	}
 }
@@ -89,8 +104,10 @@ public class Frozen : StatusEffect {
 	float origWalkSpeed;
 
 	public override void OnBegin() {
-		SetColor (Color.cyan);
-	}
+        //visual = Instantiate(Resources.Load("Particles/IceEffect"), npc.transform) as GameObject;
+        //visual.transform.localPosition = Vector3.up;
+        SetColor(Color.cyan);
+    }
 
 	public override void OnTick() {
 		if (player != null) {
@@ -99,11 +116,14 @@ public class Frozen : StatusEffect {
 
 		if (npc != null) {
 			origWalkSpeed = npc.moveSpeed;
+            npc.moveDisabled = true;
 			npc.moveSpeed = 0.0f;
 		}
 	}
 
 	public override void OnEnd() {
+        //Destroy(visual);
+        npc.moveDisabled = false;
 		npc.moveSpeed = origWalkSpeed;
 		ResetColor ();
 	}

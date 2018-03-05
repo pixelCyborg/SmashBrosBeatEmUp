@@ -24,7 +24,12 @@ public class PlatformerCharacter2D : MonoBehaviour
     //Custom Movement Stuff
     public bool isClimbing = false;
     private bool checkingGround = true;
+    private bool dashing = false;
+    private bool canDash = false;
     private Collider2D col;
+
+    public float dashVelocity;
+    private float origGravity;
 
     private void Awake()
     {
@@ -35,6 +40,8 @@ public class PlatformerCharacter2D : MonoBehaviour
         m_Rigidbody2D = GetComponent<Rigidbody2D>();
         col = GetComponent<Collider2D>();
         origConstraints = m_Rigidbody2D.constraints;
+
+        origGravity = m_Rigidbody2D.gravityScale;
     }
 
 
@@ -72,8 +79,16 @@ public class PlatformerCharacter2D : MonoBehaviour
     }
 
 
-    public void Move(float move, float climb, bool crouch, bool jump)
+    public void Move(float move, float climb, bool crouch, bool jump, bool dash)
     {
+        if (dash && canDash)
+        {
+            canDash = false;
+            Dash();
+        }
+        if (dashing) return;
+
+        if (m_Grounded) canDash = true;
 
         Collider2D[] colliders = Physics2D.OverlapCircleAll(m_GroundCheck.position, k_GroundedRadius, m_WhatIsLadder);
         if (isClimbing && m_Grounded)
@@ -138,6 +153,21 @@ public class PlatformerCharacter2D : MonoBehaviour
                 m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
             }
         }
+    }
+
+    public void Dash()
+    {
+        StartCoroutine(_Dash());
+    }
+
+    IEnumerator _Dash()
+    {
+        dashing = true;
+        m_Rigidbody2D.gravityScale = 0.0f;
+        m_Rigidbody2D.velocity = Vector3.right * dashVelocity * transform.localScale.x;
+        yield return new WaitForSeconds(0.2f);
+        dashing = false;
+        m_Rigidbody2D.gravityScale = origGravity ;
     }
 
     IEnumerator DropThroughPlatform()

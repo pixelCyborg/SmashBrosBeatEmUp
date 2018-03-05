@@ -32,7 +32,8 @@ public class Door : Interactable {
 
         InteractionSelector.Deselect();
 		SceneManager.LoadScene (targetScene, LoadSceneMode.Additive);
-		SceneManager.UnloadSceneAsync (gameObject.scene);
+        if (targetScene != "Hub") LightingManager.instance.ToggleDarkness(true);
+        SceneManager.UnloadSceneAsync (gameObject.scene);
 	}
 
     /*  -=== Pretty sure this aint being used anymore

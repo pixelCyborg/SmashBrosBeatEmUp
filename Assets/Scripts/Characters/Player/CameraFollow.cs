@@ -53,6 +53,8 @@ public class CameraFollow : MonoBehaviour {
         if (targetZoom > MaxZoom) targetZoom = MaxZoom;
         else if (targetZoom < MinZoom) targetZoom = MinZoom;
 
+        if (targetZoom > MaxZoom * 1.5f) target = null;
+
         target = col.transform;
     }
 
@@ -71,6 +73,7 @@ public class CameraFollow : MonoBehaviour {
         if (target == null)
         {
             target = GameObject.FindGameObjectWithTag("Player").transform;
+            targetZoom = defaultZoom;
             return;
         }
 

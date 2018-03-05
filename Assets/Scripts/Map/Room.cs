@@ -18,6 +18,8 @@ public class Room : MonoBehaviour {
         initialized = true;
     }
 
+    //Removing room focus for now
+    /*
     public void OnTriggerStay2D(Collider2D col)
     {
         if (col.tag != "Player") return;
@@ -37,4 +39,5 @@ public class Room : MonoBehaviour {
         if (col.tag != "Player") return;
         CameraFollow.UnFocusRoom(roomCollider);
     }
+    */
 }

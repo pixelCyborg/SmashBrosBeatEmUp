@@ -42,7 +42,7 @@ public class Collectable : Interactable {
     {
         if (this.enabled)
         {
-            if (player != null)
+            if (player != null && collision.tag == "Player")
             {
                 player.PickUp(this);
             }

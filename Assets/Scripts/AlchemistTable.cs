@@ -7,6 +7,6 @@ public class AlchemistTable : Interactable {
     internal override void OnInteract()
     {
         base.OnInteract();
-        Inventory.instance.Toggle();
+        Inventory.instance.Toggle(true);
     }
 }

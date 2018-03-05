@@ -90,15 +90,21 @@ public class Enemy : MonoBehaviour {
         player.TakeDamage(damage, new Vector2(storedVel.x, 10));
         body.velocity = Vector2.zero;
         body.AddForce(new Vector2(-storedVel.x * 1.5f, 10), ForceMode2D.Impulse);
-        StartCoroutine(DamageTimeout());
+        StartCoroutine(DamageTimeout(true));
         OnDamage(target);
     }
 
-    IEnumerator DamageTimeout()
+    IEnumerator DamageTimeout(bool takingDamage)
     {
+        float currentTime = Time.time;
         moveDisabled = true;
-        yield return new WaitForSeconds(recoveryTime);
+        while (Time.time - currentTime < recoveryTime)
+        {
+            yield return new WaitForSeconds(0.1f);
+            if (takingDamage && !dead) sprite.color = sprite.color == origColor ? Color.grey : origColor;
+        }
         moveDisabled = false;
+        if (takingDamage && !dead) sprite.color = origColor;
     }
 
     //Check if player is within detection radius
@@ -132,44 +138,52 @@ public class Enemy : MonoBehaviour {
         {
             target = origin;
         }
-		StartCoroutine (_TakeDamage (damage, enemyPos));
-	}
 
-    IEnumerator _TakeDamage(int damage, Vector2 enemyPos)
-    {
+        CameraShake.AddShake(0.2f);
         moveDisabled = true;
-        sprite.color = (sprite.color == origColor ? Color.white : origColor);
+
         if (health < 1)
         {
-            dead = true;
-            moveDisabled = true;
-			GetComponentInChildren<MinimapIcon> ().DisableIcon ();
-            OnDie();
-
-            body.constraints = RigidbodyConstraints2D.None;
-            DropCoins(enemyPos);
-            GetComponent<SpriteRenderer>().color = Color.grey;
-            Vector3 oldPosition = Vector3.zero;
-            body.drag = 0.2f;
-
-            while (Vector3.Distance(transform.position, oldPosition) > 0.02f)
-            {
-                oldPosition = transform.position;
-                yield return new WaitForSeconds(0.1f);
-            }
-            Die(enemyPos);
+            CameraShake.AddShake(0.2f);
+            StartCoroutine(Die(enemyPos));
         }
-        else {
-            yield return new WaitForSeconds(0.1f);
-            moveDisabled = false;
+        else
+        {
+            StartCoroutine(DamageTimeout(true));
         }
     }
 
-    internal virtual void Die(Vector2 enemyPos)
+    IEnumerator Die(Vector2 enemyPos)
     {
-        Destroy(GetComponent<Collider2D>());
-        Destroy(GetComponent<Rigidbody2D>());
-        Destroy(this);
+        StopCoroutine("DamageTimeout");
+        dead = true;
+        moveDisabled = true;
+        GetComponentInChildren<MinimapIcon>().DisableIcon();
+        sprite.color = origColor;
+        body.constraints = RigidbodyConstraints2D.None;
+        OnDie();
+        DropCoins(enemyPos);
+        Vector3 oldPosition = Vector3.zero;
+        body.drag = 0.2f;
+
+        yield return null;
+        StatusEffect[] status = GetComponents<StatusEffect>();
+        StopCoroutine("DamageTimeout");
+        if (status != null)
+        {
+            for (int i = status.Length - 1; i >= 0; i--)
+            {
+                status[i].End();
+            }
+        }
+
+        while (Vector3.Distance(transform.position, oldPosition) > 0.02f)
+        {
+            oldPosition = transform.position;
+            yield return new WaitForSeconds(0.1f);
+        }
+        yield return new WaitForSeconds(3.0f);
+        Destroy(gameObject);
     }
 
     void DropCoins(Vector2 enemyPos)

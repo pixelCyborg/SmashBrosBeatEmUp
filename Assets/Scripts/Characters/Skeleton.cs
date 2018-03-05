@@ -3,12 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Skeleton : Enemy {
+    public Sprite skull;
     //Lunge specific stuff
     private bool lungeReady = true;
     public float lungeWindup = 0.8f;
     public Vector2 lungeForce;
     Vector2 prevDistance;
     float xVel;
+
+    ParticleSystem bones;
+
+    new void Start()
+    {
+        base.Start();
+        bones = GetComponentInChildren<ParticleSystem>();
+        if(bones != null)
+        bones.Stop();
+    }
 
     internal override void Attack(Transform target)
     {
@@ -114,5 +125,25 @@ public class Skeleton : Enemy {
             yield return new WaitForEndOfFrame();
         }
         lungeReady = true;
+    }
+
+    internal override void OnDie()
+    {
+        base.OnDie();
+        if (bones != null)
+        {
+            bones.Emit(5);
+        }
+
+        if (skull != null)
+        {
+            GetComponent<SpriteRenderer>().sprite = skull;
+            CapsuleCollider2D col = GetComponent<CapsuleCollider2D>();
+            col.sharedMaterial = new PhysicsMaterial2D();
+            col.sharedMaterial.bounciness = 0.5f;
+            col.size = new Vector2(col.size.x, col.size.x);
+            body.AddTorque(Random.Range(-180, 180));
+            body.AddForce(new Vector2(Random.Range(-3, 3), Random.Range(-3, 3)));
+        }
     }
 }

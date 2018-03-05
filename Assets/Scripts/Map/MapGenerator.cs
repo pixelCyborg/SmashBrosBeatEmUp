@@ -48,6 +48,12 @@ public class MapGenerator : MonoBehaviour {
     public GameObject floaterEnemy;
     public GameObject wizardEnemy;
 
+    [Header("Decorations")]
+    public Transform decorationsParent;
+    public GameObject torch;
+    public GameObject[] fauna;
+    public GameObject[] furnishings;
+
     int[,] map;
     List<Ladder> ladders;
     List<Platform> platforms;
@@ -181,6 +187,7 @@ public class MapGenerator : MonoBehaviour {
         PlacePlayerAtStart();
         PlaceEnemies();
         PlaceChests();
+        PlaceDecorations();
 
         PaintMapTiles();
 
@@ -192,6 +199,11 @@ public class MapGenerator : MonoBehaviour {
         for (int i = interactableParent.childCount - 1; i >= 0; i--)
         {
             DestroyImmediate(interactableParent.GetChild(i).gameObject);
+        }
+
+        for (int i = decorationsParent.childCount - 1; i >= 0; i--)
+        {
+            DestroyImmediate(decorationsParent.GetChild(i).gameObject);
         }
     }
 
@@ -638,6 +650,23 @@ public class MapGenerator : MonoBehaviour {
             }
         }
 	}
+
+    void PlaceDecorations()
+    {
+        foreach (Room room in rooms)
+        {
+            int torches = UnityEngine.Random.Range(1, room.tiles.Count / 100);
+            for (int i = 0; i < torches; i++)
+            {
+                Coord targetTile = room.edgeTiles[UnityEngine.Random.Range(0, room.edgeTiles.Count)];
+                while (!IsFloorTile(targetTile.x, targetTile.y - 1))
+                {
+                    targetTile = room.edgeTiles[UnityEngine.Random.Range(0, room.edgeTiles.Count)];
+                }
+                Instantiate(torch, CoordToWorldPoint(targetTile) + Vector3.up * 0.5f, Quaternion.identity, decorationsParent);
+            }
+        }
+    }
 
     void SmoothMap()
     {

@@ -32,16 +32,17 @@ public class Platformer2DUserControl : MonoBehaviour
     {
         if (Inventory.open)
         {
-            m_Character.Move(0, 0, false, false);
+            m_Character.Move(0, 0, false, false, false);
             return;
         }
         // Read the inputs.
         bool crouch = Input.GetKey(KeyCode.LeftControl);
+        bool dash = Input.GetKey(KeyCode.LeftShift);
         float h = Input.GetAxis("Horizontal");
         float v = Input.GetAxis("Vertical");
         if (player.takingDamage) return;
         // Pass all parameters to the character control script.
-        m_Character.Move(h, v, crouch, m_Jump);
+        m_Character.Move(h, v, crouch, m_Jump, dash);
         m_Jump = false;
     }
 }

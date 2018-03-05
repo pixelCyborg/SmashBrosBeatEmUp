@@ -41,6 +41,7 @@ public class CrossbowBolt : Projectile {
             Enemy enemy = collision.gameObject.GetComponent<Enemy>();
             if(enemy != null)
             {
+                ApplyStatus(enemy);
                 enemy.TakeDamage(damage, transform.position, origin);
             }
             Destroy(gameObject);

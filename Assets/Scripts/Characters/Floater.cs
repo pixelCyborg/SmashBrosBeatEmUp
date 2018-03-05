@@ -3,6 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Floater : Enemy {
+    LightSource lightSource;
+
+    new void Start()
+    {
+        base.Start();
+        lightSource = LightingManager.instance.CreateLightSource(transform, 3.0f);
+    }
+
     new private void Update()
     {
         base.Update();
@@ -36,6 +44,7 @@ public class Floater : Enemy {
     internal override void OnDie()
     {
         base.OnDie();
+        lightSource.Fade();
         body.gravityScale = 4.0f;
     }
 

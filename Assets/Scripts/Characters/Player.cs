@@ -36,6 +36,8 @@ public class Player : MonoBehaviour {
     public float recoverTime = 1.0f;
     private Crossbow crossbow;
 
+    LightSource torch;
+
     public Healthbar healthbar;
 
     // Use this for initialization
@@ -53,6 +55,8 @@ public class Player : MonoBehaviour {
         potionPrefab = Resources.Load("Potion") as GameObject;
         healthbar.SetLifeCount(health);
         spriteRenderer = GetComponent<SpriteRenderer>();
+
+        torch = LightingManager.instance.CreateLightSource(transform);
 	}
 
     private void Update()
@@ -85,6 +89,8 @@ public class Player : MonoBehaviour {
     {
         if (takingDamage) return;
 
+
+        CameraShake.AddShake(damage * 0.25f);
         takingDamage = true;
         health -= damage;
         body.AddForce(impact * damage, ForceMode2D.Impulse);

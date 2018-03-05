@@ -63,8 +63,6 @@ public class Crossbow : MonoBehaviour {
             {
                 upgrade.OnShoot(direction.x, direction.y);
             }
-
-            CameraShake.AddShake(damage * 0.1f);
         }
     }
 

@@ -16,6 +16,7 @@ public class Campfire : Interactable {
     {
         InteractionSelector.Deselect();
 
+        LightingManager.instance.ToggleDarkness(false);
         SceneManager.LoadScene("Hub", LoadSceneMode.Additive);
         SceneManager.UnloadSceneAsync(gameObject.scene);
     }

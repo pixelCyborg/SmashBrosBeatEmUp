@@ -24,6 +24,7 @@ public class InteractionSelector : MonoBehaviour
 
 public static void Select(Transform newTarget, string text = "")
     {
+        //targetQueue.Add(target);
         target = newTarget;
         targetSprite = target.GetComponent<SpriteRenderer>();
         glow.SetMaterialProperties();
