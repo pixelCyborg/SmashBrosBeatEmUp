@@ -85,7 +85,7 @@ public class Burning : StatusEffect {
         if (tickIndex == 0) return;
 
 		if(player != null) {
-			Player.Health -= (int)power;
+		    Player.instance.TakeDamage((int)power, player.transform.position);
 		}
 
 		if (npc != null) {

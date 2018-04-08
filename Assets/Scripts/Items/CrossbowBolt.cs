@@ -39,11 +39,20 @@ public class CrossbowBolt : Projectile {
         if (collision.transform.tag == "Enemy")
         {
             Enemy enemy = collision.gameObject.GetComponent<Enemy>();
-            if(enemy != null)
+            Boss boss = collision.gameObject.GetComponent<Boss>();
+
+            if (enemy != null)
             {
                 ApplyStatus(enemy);
                 enemy.TakeDamage(damage, transform.position, origin);
             }
+
+            if(boss != null)
+            {
+                enemy.TakeDamage(damage, transform.position, origin);
+            }
+
+
             Destroy(gameObject);
         }
         else if (!CheckImpact(collision))

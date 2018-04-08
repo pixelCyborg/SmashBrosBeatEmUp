@@ -89,6 +89,7 @@ public class Cauldron : MonoBehaviour {
 
         item.sprite = potionSpriteBank[Random.Range(0, potionSpriteBank.Length)];
         item.itemName = "Potion";
+        item.consumable = true;
 
         Inventory.instance.AddToInventory(item);
         ClearBrew();

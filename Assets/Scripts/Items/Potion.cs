@@ -60,7 +60,10 @@ public class Property
         //Slippery surfaces(?)
         Ice,
         //Heals living, damages undead
-        Holy
+        Holy,
+
+        //================Natural===================
+        Healing
     }
 
     public int power;

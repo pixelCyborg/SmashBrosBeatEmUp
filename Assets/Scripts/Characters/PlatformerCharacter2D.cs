@@ -42,6 +42,7 @@ public class PlatformerCharacter2D : MonoBehaviour
         origConstraints = m_Rigidbody2D.constraints;
 
         origGravity = m_Rigidbody2D.gravityScale;
+        canDash = true;
     }
 
 
@@ -88,8 +89,6 @@ public class PlatformerCharacter2D : MonoBehaviour
         }
         if (dashing) return;
 
-        if (m_Grounded) canDash = true;
-
         Collider2D[] colliders = Physics2D.OverlapCircleAll(m_GroundCheck.position, k_GroundedRadius, m_WhatIsLadder);
         if (isClimbing && m_Grounded)
         {
@@ -131,6 +130,7 @@ public class PlatformerCharacter2D : MonoBehaviour
         // If the player should jump...
         if ((m_Grounded || isClimbing) && jump)
         {
+            canDash = true;
             if (isClimbing)
             {
                 StopClimbing();
@@ -168,6 +168,13 @@ public class PlatformerCharacter2D : MonoBehaviour
         yield return new WaitForSeconds(0.2f);
         dashing = false;
         m_Rigidbody2D.gravityScale = origGravity ;
+        yield return new WaitForSeconds(0.5f);
+        while (!m_Grounded)
+        {
+            yield return null;
+        }
+        canDash = true;
+        //canDash
     }
 
     IEnumerator DropThroughPlatform()

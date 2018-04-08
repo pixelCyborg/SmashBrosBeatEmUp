@@ -20,7 +20,7 @@ public class Healthbar : MonoBehaviour {
         lifePrefab = transform.GetChild(0).gameObject;
 
         if (GetComponentInParent<Enemy>()) maxHealth = GetComponentInParent<Enemy>().health;
-        if (GetComponentInParent<Player>()) maxHealth = Player.Health;
+        if (GetComponentInParent<Player>()) maxHealth = Player.instance.health;
 
         currentHealth = maxHealth;
 

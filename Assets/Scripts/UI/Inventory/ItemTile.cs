@@ -41,8 +41,20 @@ public class ItemTile : MonoBehaviour {
 
     public void StartDrag()
     {
-        Inventory.instance.StartItemDrag(this);
-        RemoveItem();
+        //If right click
+        if (Input.GetMouseButton(1))
+        {
+            if(item.Use())
+            {
+                RemoveItem();
+                HoverBox.instance.HideDescription();
+            }
+        }
+        else
+        {
+            Inventory.instance.StartItemDrag(this);
+            RemoveItem();
+        }
     }
 
     public void OnHoverStart()

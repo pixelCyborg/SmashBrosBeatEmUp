@@ -14,6 +14,9 @@ public class Door : Interactable {
     {
         doorCol = GetComponent<Collider2D>();
         playerCol = FindObjectOfType<Player>().GetComponent<Collider2D>();
+        SceneManager.sceneLoaded += (Scene scene, LoadSceneMode mode) => {
+            if (targetScene != "Hub") LightingManager.instance.ToggleDarkness(true);
+        };
     }
 
     internal override void OnInteract()
@@ -30,9 +33,10 @@ public class Door : Interactable {
 		if (string.IsNullOrEmpty (targetScene))
 			return;
 
+        if (targetScene == "Dungeon") targetScene = MissionManager.instance.GetContractTileset();
+
         InteractionSelector.Deselect();
 		SceneManager.LoadScene (targetScene, LoadSceneMode.Additive);
-        if (targetScene != "Hub") LightingManager.instance.ToggleDarkness(true);
         SceneManager.UnloadSceneAsync (gameObject.scene);
 	}
 

@@ -8,7 +8,7 @@ public class CrossbowUpgrade : MonoBehaviour {
 
     public enum Upgrade
     {
-        Multishot, Scope, Repeater
+        None, Multishot, Scope, Repeater
     }
 
     private void Start()

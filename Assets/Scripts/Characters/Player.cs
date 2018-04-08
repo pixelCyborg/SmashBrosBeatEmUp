@@ -18,11 +18,7 @@ public class Player : MonoBehaviour {
 	public Collider2D groundCheck;
 
 	//Stats
-	private static int health = 5;
-	public static int Health {
-		get { return health; }
-		set { health = value; }
-	}
+	public int health = 5;
     private int maxHealth;
 	private int damage = 1;
 	Vector2 origScale;
@@ -40,9 +36,13 @@ public class Player : MonoBehaviour {
 
     public Healthbar healthbar;
 
+    private void Awake()
+    {
+        instance = this;
+    }
+
     // Use this for initialization
     void Start () {
-        instance = this;
         maxHealth = health;
         body = GetComponent<Rigidbody2D>();
         source = GetComponent<AudioSource>();
@@ -85,6 +85,12 @@ public class Player : MonoBehaviour {
         controller.enabled = true;
     }
 
+    public void AddHealth(int amount)
+    {
+        health += amount;
+        healthbar.SetLifeCount(health);
+    }
+
     public void TakeDamage(int damage, Vector2 impact)
     {
         if (takingDamage) return;
@@ -93,8 +99,9 @@ public class Player : MonoBehaviour {
         CameraShake.AddShake(damage * 0.25f);
         takingDamage = true;
         health -= damage;
-        body.AddForce(impact * damage, ForceMode2D.Impulse);
         healthbar.SetLifeCount(health);
+        body.AddForce(impact * damage, ForceMode2D.Impulse);
+        //healthbar.SetLifeCount(health);
         if (health > 0) StartCoroutine(_TakeDamage());
         else StartCoroutine(_Die());
 

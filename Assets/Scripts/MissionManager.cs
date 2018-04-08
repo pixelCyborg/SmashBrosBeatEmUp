@@ -60,4 +60,20 @@ public class MissionManager : MonoBehaviour {
         partyFunds += currentPayout;
         currentContract = null;
     }
+
+    public string GetContractTileset()
+    {
+        string tileset = "";
+
+        if(currentContract.tileset == Contract.Tileset.Cave)
+        {
+            tileset = "Cave";
+        }
+        if(currentContract.tileset == Contract.Tileset.Dungeon)
+        {
+            tileset = "Green Dungeon";
+        }
+
+        return tileset;
+    }
 }

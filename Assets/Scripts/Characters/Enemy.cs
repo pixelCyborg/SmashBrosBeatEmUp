@@ -198,4 +198,4 @@ public class Enemy : MonoBehaviour {
             coinBody.AddForce(((Vector2)transform.position - (Vector2)enemyPos).normalized * 5, ForceMode2D.Impulse);
         }
     }
-} 
+}

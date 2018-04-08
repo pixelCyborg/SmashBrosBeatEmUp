@@ -130,6 +130,8 @@ public class Skeleton : Enemy {
     internal override void OnDie()
     {
         base.OnDie();
+        StopCoroutine("_Lunge");
+
         if (bones != null)
         {
             bones.Emit(5);

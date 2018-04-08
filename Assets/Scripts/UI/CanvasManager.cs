@@ -54,6 +54,7 @@ public class CanvasManager : MonoBehaviour {
         LightingManager.instance.ToggleDarkness(false);
         HideGameOver();
         Player.instance.Reset();
+        MissionManager.instance.NextDay();
     }
 
     public void Quit()

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -25,6 +26,7 @@ public class TravelMap : MonoBehaviour {
     public int height = 100;
 
 	void Start() {
+        GenerateTravelMap();
 		groupComponent = GetComponent<CanvasGroup> ();
 		mapShown = true;
         instance = this;
@@ -109,11 +111,16 @@ public class TravelMap : MonoBehaviour {
         location.y = (location.y - 50)/height * townParent.GetComponent<RectTransform>().rect.height;
         townRect.anchoredPosition = location;
 
+        System.Array values = System.Enum.GetValues(typeof(Contract.Tileset));
+        System.Random random = new System.Random();
+        Debug.Log(values.Length);
+
         contract.targetName = "Contract (" + location.x + " | " + location.y + ")";
         contract.payment = Random.Range(500, 5000);
         contract.timeframe = Random.Range(3, 15);
         contract.difficulty = Contract.Difficulty.Regular;
         contract.location = location;
+        contract.tileset = (Contract.Tileset)values.GetValue(random.Next(values.Length));
     }
 
     //Map Generation

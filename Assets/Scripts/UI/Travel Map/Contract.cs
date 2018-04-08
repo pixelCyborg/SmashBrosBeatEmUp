@@ -8,6 +8,12 @@ public class Contract : LocationBase, IPointerDownHandler {
     public int payment;
     public int timeframe;
     public Difficulty difficulty;
+    public Tileset tileset;
+
+    public enum Tileset
+    {
+        Dungeon, Cave
+    }
 
     public enum Difficulty
     {
@@ -31,6 +37,7 @@ public class Contract : LocationBase, IPointerDownHandler {
 //        descriptionString = targetName + "\n";
         descriptionString += payment + "\n";
         descriptionString += timeframe + "\n";
+        descriptionString += tileset.ToString() + "\n";
         descriptionString += difficulty.ToString();
 
         return descriptionString;
@@ -42,6 +49,7 @@ public class Contract : LocationBase, IPointerDownHandler {
  //       labelString = "Target:\n";
         labelString += "Payout:\n";
         labelString += "Timeframe:\n";
+        labelString += "Location:\n";
         labelString += "Difficulty:\n";
 
         return labelString;
