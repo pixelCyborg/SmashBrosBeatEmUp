@@ -95,7 +95,6 @@ public class Player : MonoBehaviour {
     {
         if (takingDamage) return;
 
-
         CameraShake.AddShake(damage * 0.25f);
         takingDamage = true;
         health -= damage;

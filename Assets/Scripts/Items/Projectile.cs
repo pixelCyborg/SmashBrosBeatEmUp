@@ -7,7 +7,7 @@ public class Projectile : MonoBehaviour {
     public List<Property> properties;
 
     //Use for properties
-    internal int damage = 1;
+    public int damage = 1;
     private int bounces;
     private bool grenade = false;
 

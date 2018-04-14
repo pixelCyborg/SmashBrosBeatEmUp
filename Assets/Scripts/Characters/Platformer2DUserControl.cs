@@ -40,7 +40,7 @@ public class Platformer2DUserControl : MonoBehaviour
         bool dash = Input.GetKey(KeyCode.LeftShift);
         float h = Input.GetAxis("Horizontal");
         float v = Input.GetAxis("Vertical");
-        if (player.takingDamage) return;
+        //if (player.takingDamage) return;
         // Pass all parameters to the character control script.
         m_Character.Move(h, v, crouch, m_Jump, dash);
         m_Jump = false;

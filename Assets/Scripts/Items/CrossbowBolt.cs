@@ -49,7 +49,7 @@ public class CrossbowBolt : Projectile {
 
             if(boss != null)
             {
-                enemy.TakeDamage(damage, transform.position, origin);
+                boss.TakeDamage(damage, origin);
             }
 
 

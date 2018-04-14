@@ -4,9 +4,8 @@ using UnityEngine;
 
 public class PhilosopherStone : Boss {
     //Phase 1
-
-
     Vector2 currentDir;
+
 
     internal override void Move()
     {
@@ -17,5 +16,4 @@ public class PhilosopherStone : Boss {
     {
         base.Attack();
     }
-
 }
