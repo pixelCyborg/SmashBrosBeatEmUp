@@ -113,7 +113,6 @@ public class TravelMap : MonoBehaviour {
 
         System.Array values = System.Enum.GetValues(typeof(Contract.Tileset));
         System.Random random = new System.Random();
-        Debug.Log(values.Length);
 
         contract.targetName = "Contract (" + location.x + " | " + location.y + ")";
         contract.payment = Random.Range(500, 5000);

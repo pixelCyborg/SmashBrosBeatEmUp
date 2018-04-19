@@ -15,6 +15,8 @@ public class MissionManager : MonoBehaviour {
     public int currentDay;
     public int timeframe;
 
+    private int totalFloors;
+    private int dungeonFloor;
     private int partyFunds;
 
     private void Start()
@@ -29,10 +31,11 @@ public class MissionManager : MonoBehaviour {
         timeframe = contract.timeframe;
         currentPayout = contract.payment;
         currentDay = 1;
+        totalFloors = Random.Range(3, 6);
 
         contractTitle.text = currentContract.targetName;
         dayCounter.text = "Day " + currentDay + " of " + timeframe;
-
+            
         if(TravelMap.mapShown) TravelMap.instance.Toggle();
         MissionTracker.instance.ShowMission(currentContract.targetName, timeframe);
     }
@@ -59,6 +62,22 @@ public class MissionManager : MonoBehaviour {
     {
         partyFunds += currentPayout;
         currentContract = null;
+        
+    }
+
+    public void NextFloor()
+    {
+        dungeonFloor++;
+    }
+
+    public void ResetFloors()
+    {
+        dungeonFloor = 0;
+    }
+
+    public bool IsBossRoom()
+    {
+        return dungeonFloor == totalFloors;
     }
 
     public string GetContractTileset()

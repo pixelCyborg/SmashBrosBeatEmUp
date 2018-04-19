@@ -35,26 +35,10 @@ public class Crossbow : MonoBehaviour {
     {
         if (CanShoot && !Inventory.open && !TravelMap.mapShown)
         {
-
-            /*
-            Vector3 direction = transform.localScale;
-            direction.y = 0;
-            if(Input.GetAxis("Vertical") < -0.2f)
-            {
-                direction.y = -1;
-                direction.x = 0;
-            }
-            else if(Input.GetAxis("Vertical") > 0.2f)
-            {
-                direction.y = 1;
-                direction.x = 0;
-            }
-            */
   
             Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector2 direction = (mouseWorldPos - transform.position).normalized;
-            direction *= boltSpeed;
-
+            Vector2 direction = (mouseWorldPos - transform.position);
+            direction = direction.normalized * boltSpeed;
             Reload();
             Shoot(direction.x, direction.y);
 
@@ -86,6 +70,6 @@ public class Crossbow : MonoBehaviour {
     {
         CrossbowBolt bolt = Instantiate(instance.boltPrefab, instance.transform.position, Quaternion.identity).GetComponent<CrossbowBolt>();
         bolt.properties = properties;
-        bolt.Shoot(x, y, origin, damage);
+        bolt.Shoot(x, y, damage);
     }
 }

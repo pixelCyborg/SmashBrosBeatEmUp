@@ -16,20 +16,6 @@ public class SpectralFireball : Projectile {
 		transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 	}
 
-	public void Shoot(float x, float y, int _damage = 1)
-	{
-		damage = _damage;
-		body = GetComponent<Rigidbody2D>();
-		StartCoroutine(StartTimeout());
-		body.AddForce(new Vector2(x, y), ForceMode2D.Impulse);
-	}
-
-	IEnumerator StartTimeout()
-	{
-		yield return new WaitForSeconds(5.0f);
-		Destroy(gameObject);
-	}
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.transform.tag == "Enemy") return;

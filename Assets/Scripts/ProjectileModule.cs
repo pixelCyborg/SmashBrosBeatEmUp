@@ -7,7 +7,8 @@ using UnityEditor;
 #endif
 
 public class ProjectileModule : MonoBehaviour {
-    public int numTestProjectiles = 1;
+    public float projectileSpeed = 5.0f;
+    public int projectileCount = 1;
     public float currentRotation = 0;
     public float currentScale = 5;
     public float rotationSpeed = 2;
@@ -18,7 +19,7 @@ public class ProjectileModule : MonoBehaviour {
 
     private void Start()
     {
-        TestHalo();
+        SpawnHalo();
     }
 
     private void Update()
@@ -46,11 +47,25 @@ public class ProjectileModule : MonoBehaviour {
         }
     }
 
+    public void ShootHalo()
+    {
+        for(int i = 0; i < projectiles.Count; i++)
+        {
+            SpectralFireball fireball = (SpectralFireball)projectiles[i];
+            Vector3 direction = fireball.transform.position - transform.position;
+            direction = direction.normalized * projectileSpeed;
+
+            fireball.GetComponent<Rigidbody2D>().isKinematic = false;
+            fireball.Shoot(direction.x, direction.y);
+        }
+
+        projectiles = new List<Projectile>();
+    }
+
     void ClearHalo()
     {
         if (projectiles.Count > 0)
         {
-            Debug.Log(projectiles.Count);
             for (int i = projectiles.Count - 1; i >= 0; i--)
             {
                 if (projectiles[i] != null)
@@ -63,11 +78,11 @@ public class ProjectileModule : MonoBehaviour {
         projectiles = new List<Projectile>();
     }
 
-    public void TestHalo()
+    public void SpawnHalo()
     {
         ClearHalo();
 
-        for (int i = 0; i < numTestProjectiles; i++)
+        for (int i = 0; i < projectileCount; i++)
         {
             SpawnProjectile();
         }
@@ -86,7 +101,7 @@ public class ProjectileModuleEditor : Editor
         ProjectileModule myScript = (ProjectileModule)target;
         if (GUILayout.Button("Generate Halo"))
         {
-            myScript.TestHalo();
+            myScript.SpawnHalo();
         }
     }
 }

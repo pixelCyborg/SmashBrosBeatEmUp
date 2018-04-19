@@ -66,6 +66,20 @@ public class Projectile : MonoBehaviour {
         }
     }
 
+    public void Shoot(float x, float y, int _damage = 1)
+    {
+        damage = _damage;
+        body = GetComponent<Rigidbody2D>();
+        StartCoroutine(StartTimeout());
+        body.AddForce(new Vector2(x, y), ForceMode2D.Impulse);
+    }
+
+    internal IEnumerator StartTimeout()
+    {
+        yield return new WaitForSeconds(5.0f);
+        Destroy(gameObject);
+    }
+
     public void Throw(Transform origin, float throwForce = 15.0f)
 	{
 		if (body == null)

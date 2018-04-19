@@ -57,12 +57,16 @@ public class Player : MonoBehaviour {
         spriteRenderer = GetComponent<SpriteRenderer>();
 
         torch = LightingManager.instance.CreateLightSource(transform);
+        SpawnPoint point = FindObjectOfType<SpawnPoint>();
+        if(point != null)
+        {
+            transform.position = point.transform.position;
+        }
+
 	}
 
     private void Update()
     {
-        if (takingDamage) return;
-
         if(Input.GetButtonDown("Fire1"))
         {
             crossbow.FireCrossbow();
@@ -100,7 +104,7 @@ public class Player : MonoBehaviour {
         health -= damage;
         healthbar.SetLifeCount(health);
         body.AddForce(impact * damage, ForceMode2D.Impulse);
-        //healthbar.SetLifeCount(health);
+
         if (health > 0) StartCoroutine(_TakeDamage());
         else StartCoroutine(_Die());
 

@@ -16,6 +16,8 @@ public class ParralaxCamera : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        transform.position = origin + (targetCam.position - targetCamOrigin) * 0.15f;
+        Vector3 targetPos = origin + (targetCam.position - targetCamOrigin) * 0.15f;
+        targetPos.y = targetCam.position.y;
+        transform.position = targetPos;
 	}
 }
