@@ -445,7 +445,8 @@ public class MapGenerator : MonoBehaviour {
         int index = 1;
         int groundProximity = 0;
 
-        while(map[x + index,y] == 0)
+        if (IsOutOfBounds(x + index, y) || index > maxPlatformLength) return;
+        while (map[x + index,y] == 0)
         {
             if (IsOutOfBounds(x + index, y) || index > maxPlatformLength) return;
 

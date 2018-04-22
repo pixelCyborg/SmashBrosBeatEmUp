@@ -92,6 +92,10 @@ public class MissionManager : MonoBehaviour {
         {
             tileset = "Green Dungeon";
         }
+        if (currentContract.tileset == Contract.Tileset.Slime_Castle)
+        {
+            tileset = "Slime Castle";
+        }
 
         return tileset;
     }

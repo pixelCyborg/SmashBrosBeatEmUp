@@ -6,6 +6,7 @@ public class HubManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        Player.instance.transform.position = Vector3.zero;	
+        Player.instance.transform.position = Vector3.zero;
+        LightingManager.instance.ToggleDarkness(false);
 	}
 }

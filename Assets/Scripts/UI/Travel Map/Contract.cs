@@ -12,7 +12,7 @@ public class Contract : LocationBase, IPointerDownHandler {
 
     public enum Tileset
     {
-        Dungeon, Cave
+        Dungeon, Cave, Slime_Castle
     }
 
     public enum Difficulty

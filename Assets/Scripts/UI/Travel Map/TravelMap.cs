@@ -25,7 +25,9 @@ public class TravelMap : MonoBehaviour {
     public int width = 100;
     public int height = 100;
 
-	void Start() {
+    System.Random random = new System.Random();
+
+    void Start() {
         GenerateTravelMap();
 		groupComponent = GetComponent<CanvasGroup> ();
 		mapShown = true;
@@ -112,7 +114,6 @@ public class TravelMap : MonoBehaviour {
         townRect.anchoredPosition = location;
 
         System.Array values = System.Enum.GetValues(typeof(Contract.Tileset));
-        System.Random random = new System.Random();
 
         contract.targetName = "Contract (" + location.x + " | " + location.y + ")";
         contract.payment = Random.Range(500, 5000);

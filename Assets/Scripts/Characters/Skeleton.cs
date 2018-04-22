@@ -143,7 +143,7 @@ public class Skeleton : Enemy {
             CapsuleCollider2D col = GetComponent<CapsuleCollider2D>();
             col.sharedMaterial = new PhysicsMaterial2D();
             col.sharedMaterial.bounciness = 0.5f;
-            col.size = new Vector2(col.size.x, col.size.x);
+            col.size = new Vector2(col.size.x/2, col.size.x/2);
             body.AddTorque(Random.Range(-180, 180));
             body.AddForce(new Vector2(Random.Range(-3, 3), Random.Range(-3, 3)));
         }
