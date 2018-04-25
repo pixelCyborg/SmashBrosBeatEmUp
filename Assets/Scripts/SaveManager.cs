@@ -26,14 +26,13 @@ public static class SaveManager {
 	}
 
 	static void SetGameState(SaveFile save) {
-		Inventory.instance.PopulateInventory (save.inventory, save.hotbar);
+		Inventory.instance.PopulateInventory (save.inventory);
 		Player.instance.health = save.currentHealth;
 	}
 
 	static SaveFile SaveGameState() {
 		SaveFile file = new SaveFile ();
 		file.inventory = Inventory.instance.GetInventoryItems ();
-		file.hotbar = Inventory.instance.GetHotbarItems ();
 		file.currentHealth = Player.instance.health;
 
 		return file;

@@ -68,9 +68,9 @@ public class Hotbar : MonoBehaviour {
 
     public void SetIndex(int newIndex)
     {
-        hotbarTiles[currentIndex].Unhighlight();
+        //hotbarTiles[currentIndex].Unhighlight();
         currentIndex = newIndex;
-        hotbarTiles[currentIndex].Highlight();
+        //hotbarTiles[currentIndex].Highlight();
 
     }
 

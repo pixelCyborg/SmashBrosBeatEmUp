@@ -8,6 +8,7 @@ public class Collectable : Interactable {
 
     void Start()
     {
+        if (gameObject.name.Contains("(Clone)")) gameObject.name = gameObject.name.Substring(0, gameObject.name.Length - 7);
 
         if (item.properties == null)
         {
@@ -28,6 +29,11 @@ public class Collectable : Interactable {
             {
                 item.description += "-" + item.properties[i].type + " " + item.properties[i].power + "\n";
             }
+        }
+
+        if(item.quantity < 1)
+        {
+            item.quantity = 1;
         }
 
         description = item.itemName;

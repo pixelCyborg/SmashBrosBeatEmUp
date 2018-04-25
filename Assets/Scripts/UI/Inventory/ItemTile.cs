@@ -7,8 +7,10 @@ public class ItemTile : MonoBehaviour {
     public Item item;
 
     public Image rend;
+    public Text itemName;
+    public Text quantity;
+
     private Image background;
-    private Color origColor;
 
     public delegate void OnSetItem(Item setItem);
     public delegate void OnRemoveItem(Item removeItem);
@@ -19,7 +21,6 @@ public class ItemTile : MonoBehaviour {
     {
         item = null;
         background = GetComponent<Image>();
-        origColor = background.color;
     }
 
     public void SetItem(Item _item)
@@ -28,6 +29,8 @@ public class ItemTile : MonoBehaviour {
         rend.enabled = true;
         rend.sprite = item.sprite;
         rend.preserveAspect = true;
+        itemName.text = item.itemName;
+        quantity.text = item.quantity.ToString();
 
         if(onSetItem != null) onSetItem(item);
     }
@@ -36,9 +39,13 @@ public class ItemTile : MonoBehaviour {
     {
         if(onRemoveItem != null) onRemoveItem(item);
         item = null;
+        rend.sprite = null;
         rend.enabled = false;
+        itemName.text = "-";
+        quantity.text = "";
     }
 
+/*
     public void StartDrag()
     {
         //If right click
@@ -77,7 +84,9 @@ public class ItemTile : MonoBehaviour {
             HoverBox.instance.HideDescription();
         }
     }
+*/
 
+/*
     public void Highlight()
     {
         background.color = Color.white;
@@ -87,4 +96,5 @@ public class ItemTile : MonoBehaviour {
     {
         background.color = origColor;
     }
+*/
 }

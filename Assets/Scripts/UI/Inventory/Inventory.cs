@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class Inventory : MonoBehaviour {
     static Canvas myCanvas;
-    Hotbar hotbar;
     public static Inventory instance;
     RectTransform inventoryPanel;
     CanvasGroup group;
@@ -15,10 +14,8 @@ public class Inventory : MonoBehaviour {
     private ItemTile origTile;
     public Image itemCursor;
 
-    public Transform hotbarParent;
     public Transform inventoryParent;
 
-    ItemTile[] hotbarTiles;
     ItemTile[] inventoryTiles;
     List<Item> heldItems;
 
@@ -35,23 +32,17 @@ public class Inventory : MonoBehaviour {
 
     void Start()
     {
-        itemCursor.enabled = false;
         myCanvas = GetComponentInParent<Canvas>();
         heldItems = new List<Item>();
-        hotbarTiles = new ItemTile[hotbarParent.childCount];
         inventoryTiles = new ItemTile[inventoryParent.childCount];
-
-        for(int i = 0; i < hotbarTiles.Length; i++)
-        {
-            hotbarTiles[i] = hotbarParent.GetChild(i).GetComponent<ItemTile>();
-        }
 
         for (int i = 0; i < inventoryTiles.Length; i++)
         {
             inventoryTiles[i] = inventoryParent.GetChild(i).GetComponent<ItemTile>();
         }
 
-        hotbar = transform.parent.GetComponentInChildren<Hotbar>();
+        PopulateInventory(heldItems.ToArray());
+
         group = GetComponent<CanvasGroup>();
         inventoryPanel = transform.GetChild(0).GetComponent<RectTransform>();
         ToggleOff();
@@ -107,19 +98,25 @@ public class Inventory : MonoBehaviour {
 
     public void AddToInventory(Item item)
     {
+        for (int i = 0; i < heldItems.Count; i++)
+        {
+            //Update a tile
+            if (heldItems[i].itemName == item.itemName)
+            {
+                heldItems[i].quantity++;
+                inventoryTiles[i].SetItem(heldItems[i]);
+                return;
+            }
+        }
+
+        //Add to inventory
         heldItems.Add(item);
         ItemTile tile = FirstAvailableTile(item);
         tile.SetItem(item);
-        hotbar.UpdateHotbar();
     }
 
     public ItemTile FirstAvailableTile(Item item)
     {
-        for(int i = 0; i < hotbarTiles.Length; i++)
-        {
-            if (hotbarTiles[i].item == null) return hotbarTiles[i];
-        }
-
         for(int i = 0; i < inventoryTiles.Length; i++)
         {
             if (inventoryTiles[i].item == null) return inventoryTiles[i];
@@ -172,7 +169,6 @@ public class Inventory : MonoBehaviour {
         origTile = null;
         HoverBox.instance.gameObject.SetActive(true);
         HoverBox.instance.UpdateBoxPos();
-        hotbar.UpdateHotbar();
     }
 
     public void ToggleOn(bool expanded) {
@@ -180,7 +176,7 @@ public class Inventory : MonoBehaviour {
         group.interactable = true;
         group.blocksRaycasts = true;
         open = true;
-        Cauldron.instance.gameObject.SetActive(expanded);
+        //Cauldron.instance.gameObject.SetActive(expanded);
     }
 
     public void ToggleOff()
@@ -200,21 +196,16 @@ public class Inventory : MonoBehaviour {
 		return items;
 	}
 
-	public Item[] GetHotbarItems() {
-		Item[] items = new Item[hotbarTiles.Length];
-		for (int i = 0; i < items.Length; i++) {
-			items [i] = hotbarTiles [i].item;
-		}
-
-		return items;
-	}
-
-	public void PopulateInventory(Item[] inventoryItems, Item[] hotbarItems) {
-		for (int i = 0; i < inventoryItems.Length; i++) {
-			inventoryTiles [i].SetItem(inventoryItems[i]);
-		}
-		for (int i = 0; i < hotbarItems.Length; i++) {
-			hotbarTiles[i].SetItem(hotbarItems[i]);
+	public void PopulateInventory(Item[] inventoryItems) {
+		for (int i = 0; i < inventoryTiles.Length; i++) {
+            if (i < inventoryItems.Length)
+            {
+                inventoryTiles[i].SetItem(inventoryItems[i]);
+            }
+            else
+            {
+                inventoryTiles[i].RemoveItem();
+            }
 		}
 	}
 

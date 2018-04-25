@@ -71,11 +71,6 @@ public class Player : MonoBehaviour {
         {
             crossbow.FireCrossbow();
         }
-
-        if(Input.GetButtonDown("Fire2"))
-        {
-            ThrowPotion();
-        }
     }
 
     public void Reset()
