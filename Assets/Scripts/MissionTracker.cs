@@ -9,6 +9,7 @@ public class MissionTracker : MonoBehaviour {
     private CanvasGroup group;
     public Text contractTitle;
     public Text dayCounter;
+    public Text floorCounter;
     public float revealTime;
 
     private string missionTitle;
@@ -22,20 +23,22 @@ public class MissionTracker : MonoBehaviour {
         group.alpha = 0;
     }
 
-    public void ShowMission(string title, int timeframe)
+    public void ShowMission(string title, int timeframe, int floor = 1)
     {
         currentDay = 1;
         missionTitle = title;
         missionTimeframe = timeframe;
         contractTitle.text = title;
         dayCounter.text = "Day 1" + " Of " + timeframe;
+        floorCounter.text = "Dungeon Entrance";
         ShowMission();
     }
 
-    public void UpdateDayCounter(int days)
+    public void UpdateDayCounter(int days, int floor = 1)
     {
         currentDay = days;
         dayCounter.text = "Day " + days + " Of " + missionTimeframe;
+        floorCounter.text = "Floor " + floor;
         ShowMission();
     }
 

@@ -40,9 +40,19 @@ public class Skeleton : Enemy {
             velocity.y = body.velocity.y;
             body.velocity = velocity;
 
-            if (Physics2D.OverlapBox((Vector2)transform.position + (Vector2.right * 0.5f * transform.localScale.x),
+            CapsuleCollider2D col = (CapsuleCollider2D)bodyCol;
+
+            Vector3 wallCheckPos = transform.position + (transform.right * col.size.x * 0.75f * transform.localScale.x);
+            Vector3 cliffCheckPos = transform.position + (transform.right * col.size.x * 0.75f * transform.localScale.x) - (Vector3.up * col.size.y * 0.75f);
+
+            Debug.DrawLine(transform.position, wallCheckPos);
+            Debug.DrawLine(transform.position, cliffCheckPos);
+
+            //Check for wall
+            if (Physics2D.OverlapBox(wallCheckPos,
                     new Vector2(0.1f, 0.5f), 0, groundFilter, results) > 0 ||
-                Physics2D.OverlapBox((Vector2)transform.position + (Vector2.right * 0.5f * transform.localScale.x) - Vector2.up * 0.8f,
+            //Check for empty ground
+                    Physics2D.OverlapBox(cliffCheckPos,
                     new Vector2(0.1f, 0.1f), 0, groundFilter, results) == 0)
             {
                 transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, 1);

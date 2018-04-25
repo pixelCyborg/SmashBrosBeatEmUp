@@ -10,6 +10,8 @@ public class Door : Interactable {
     private Collider2D playerCol;
     private Collider2D doorCol;
 
+    public System.Action OnOpen;
+
     private void Start()
     {
         doorCol = GetComponent<Collider2D>();
@@ -33,7 +35,22 @@ public class Door : Interactable {
 		if (string.IsNullOrEmpty (targetScene))
 			return;
 
-        if (targetScene == "Dungeon") targetScene = MissionManager.instance.GetContractTileset();
+        if (targetScene == "Dungeon")
+        {
+            if (MissionManager.instance.currentFloor >= MissionManager.instance.totalFloors)
+            {
+                targetScene = MissionManager.instance.GetBossRoom();
+            }
+            else
+            {
+                targetScene = MissionManager.instance.GetContractTileset();
+            }
+        }
+
+        if(OnOpen != null)
+        {
+            OnOpen();
+        }
 
         InteractionSelector.Deselect();
 		SceneManager.LoadScene (targetScene, LoadSceneMode.Additive);

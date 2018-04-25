@@ -53,7 +53,7 @@ public class ExtraAdaptiveTile : Tile {
         if (sprite != null)
         {
             tileData.sprite = sprite;
-            tileData.color = Color.white;
+            tileData.color = color;
             //tileData.transform = Matrix4x4.TRS(Vector3.zero, Quaternion.identity , Vector3.one);
             tileData.flags = TileFlags.LockTransform;
             tileData.colliderType = ColliderType.Grid;

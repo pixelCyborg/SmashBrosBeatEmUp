@@ -9,10 +9,17 @@ public class Contract : LocationBase, IPointerDownHandler {
     public int timeframe;
     public Difficulty difficulty;
     public Tileset tileset;
+    public Target target;
+    public int floors;
 
     public enum Tileset
     {
         Dungeon, Cave, Slime_Castle
+    }
+
+    public enum Target
+    {
+        Philosopher_Stone
     }
 
     public enum Difficulty

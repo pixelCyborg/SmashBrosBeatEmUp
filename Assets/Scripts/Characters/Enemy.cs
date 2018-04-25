@@ -27,7 +27,7 @@ public class Enemy : MonoBehaviour {
     private Color origColor;
     private Healthbar healthbar;
     private Collider2D playerCol;
-    private Collider2D bodyCol;
+    internal Collider2D bodyCol;
 
     internal virtual void Move() { }
     internal virtual void OnDamage(Transform _target) { }
@@ -121,7 +121,23 @@ public class Enemy : MonoBehaviour {
     void CheckGround()
     {
         grounded = false;
-        if (Physics2D.OverlapBox((Vector2)transform.position - Vector2.up * 0.8f, new Vector2(0.6f, 0.2f), 0, groundFilter, results) > 0)
+        Vector2 offset = Vector2.zero;
+
+        if (bodyCol.GetType() == typeof(CapsuleCollider2D))
+        {
+            offset = Vector2.up * (((CapsuleCollider2D)bodyCol).size.y / 1.9f);
+        }
+        else if (bodyCol.GetType() == typeof(BoxCollider2D))
+        {
+            offset = Vector2.up * (((BoxCollider2D)bodyCol).size.y / 1.9f);
+        }
+        else if (bodyCol.GetType() == typeof(CircleCollider2D))
+        {
+            offset = Vector2.up * (((CircleCollider2D)bodyCol).radius / 1.9f);
+        }
+        else offset = Vector2.up;
+
+        if (Physics2D.OverlapBox((Vector2)transform.position - offset, new Vector2(0.6f, 0.2f), 0, groundFilter, results) > 0)
         {
             grounded = true;
         }

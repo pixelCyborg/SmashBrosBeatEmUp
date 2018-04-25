@@ -15,8 +15,8 @@ public class MissionManager : MonoBehaviour {
     public int currentDay;
     public int timeframe;
 
-    private int totalFloors;
-    private int dungeonFloor;
+    public int totalFloors;
+    public int currentFloor;
     private int partyFunds;
 
     private void Start()
@@ -67,17 +67,18 @@ public class MissionManager : MonoBehaviour {
 
     public void NextFloor()
     {
-        dungeonFloor++;
+        currentFloor++;
+        MissionTracker.instance.UpdateDayCounter(currentDay, currentFloor);
     }
 
     public void ResetFloors()
     {
-        dungeonFloor = 0;
+        currentFloor = 0;
     }
 
     public bool IsBossRoom()
     {
-        return dungeonFloor == totalFloors;
+        return currentFloor == totalFloors;
     }
 
     public string GetContractTileset()
@@ -98,5 +99,17 @@ public class MissionManager : MonoBehaviour {
         }
 
         return tileset;
+    }
+
+    public string GetBossRoom()
+    {
+        string bossName = "";
+
+        if(currentContract.target == Contract.Target.Philosopher_Stone)
+        {
+            return "Philosopher Stone";
+        }
+
+        return bossName;
     }
 }

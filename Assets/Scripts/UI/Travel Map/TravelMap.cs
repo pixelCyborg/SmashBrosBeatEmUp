@@ -9,7 +9,7 @@ using UnityEditor;
 public class TravelMap : MonoBehaviour {
     public static TravelMap instance;
     private List<Town> towns;
-    private List<Contract> contracts;
+    public List<Contract> contracts;
 
 	private List<Transform> locations;
 	private CanvasGroup groupComponent;
@@ -114,6 +114,7 @@ public class TravelMap : MonoBehaviour {
         townRect.anchoredPosition = location;
 
         System.Array values = System.Enum.GetValues(typeof(Contract.Tileset));
+        System.Array bosses = System.Enum.GetValues(typeof(Contract.Target));
 
         contract.targetName = "Contract (" + location.x + " | " + location.y + ")";
         contract.payment = Random.Range(500, 5000);
@@ -121,6 +122,8 @@ public class TravelMap : MonoBehaviour {
         contract.difficulty = Contract.Difficulty.Regular;
         contract.location = location;
         contract.tileset = (Contract.Tileset)values.GetValue(random.Next(values.Length));
+        contract.target = (Contract.Target)bosses.GetValue(random.Next(bosses.Length));
+        contract.floors = Random.Range(3, 6);
     }
 
     //Map Generation

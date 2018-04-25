@@ -179,6 +179,7 @@ public class MapGenerator : MonoBehaviour {
         {
             SmoothMap();
         }
+        CheckMapAccess();
 
         ProcessMap();
         FindLadders();
@@ -448,16 +449,14 @@ public class MapGenerator : MonoBehaviour {
         if (IsOutOfBounds(x + index, y) || index > maxPlatformLength) return;
         while (map[x + index,y] == 0)
         {
-            if (IsOutOfBounds(x + index, y) || index > maxPlatformLength) return;
-
             if (index > 0 && CloseToGround(x + index, y))
             {
                 groundProximity++;
             }
-
             tiles.Add(new Coord(x + index, y));
-
             index++;
+
+            if (IsOutOfBounds(x + index, y) || index > maxPlatformLength) return;
         }
 
         if(tiles.Count >= minPlatformLength && groundProximity < tiles.Count * groundProximityRatio)
@@ -503,6 +502,7 @@ public class MapGenerator : MonoBehaviour {
         Coord exitPoint = BestExitPoint();
         GameObject door = (GameObject)Instantiate(doorObject, CoordToWorldPoint(exitPoint) - Vector3.up * 0.6f, Quaternion.identity, interactableParent);
         door.GetComponent<Door>().targetScene = "Camp";
+        door.GetComponent<Door>().OnOpen = MissionManager.instance.NextFloor;
     }
 
     private void FindLadders()
@@ -683,6 +683,29 @@ public class MapGenerator : MonoBehaviour {
                 else if(neighborWalls < 4)
                 {
                     map[x, y] = 0;
+                }
+            }
+        }
+    }
+
+    void CheckMapAccess()
+    {
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                if(map[x,y] == 0)
+                {
+                    if(IsInMapRange(x, y + 1) && map[x,y + 1] == 1)
+                    {
+                        map[x, y - 1] = 0;
+                        map[x, y - 2] = 0;
+                    }
+                    if(IsInMapRange(x, y - 1) && map[x, y - 1] == 1)
+                    {
+                        map[x, y + 1] = 0;
+                        map[x, y + 2] = 0;
+                    }
                 }
             }
         }

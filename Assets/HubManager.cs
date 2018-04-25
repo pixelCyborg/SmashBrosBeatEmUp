@@ -8,5 +8,6 @@ public class HubManager : MonoBehaviour {
 	void Start () {
         Player.instance.transform.position = Vector3.zero;
         LightingManager.instance.ToggleDarkness(false);
+        FindObjectOfType<Door>().OnOpen += MissionManager.instance.NextFloor;
 	}
 }
