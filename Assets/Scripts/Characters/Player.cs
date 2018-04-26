@@ -49,7 +49,6 @@ public class Player : MonoBehaviour {
 		controller = GetComponent<PlatformerCharacter2D> ();
 		anim = GetComponent<Animator> ();
         inventory = Inventory.instance;
-        hotbar = inventory.transform.parent.GetComponentInChildren<Hotbar>();
         crossbow = GetComponentInChildren<Crossbow>();
 		origScale = transform.localScale;
         potionPrefab = Resources.Load("Potion") as GameObject;

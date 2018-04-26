@@ -17,10 +17,13 @@ public class ItemTile : MonoBehaviour {
     public OnSetItem onSetItem;
     public OnRemoveItem onRemoveItem;
 
+    private Color origColor;
+
     void Start()
     {
-        item = null;
         background = GetComponent<Image>();
+        origColor = background.color;
+        item = null;
     }
 
     public void SetItem(Item _item)
@@ -45,22 +48,21 @@ public class ItemTile : MonoBehaviour {
         quantity.text = "";
     }
 
-/*
-    public void StartDrag()
+
+    public void OnClick()
     {
-        //If right click
-        if (Input.GetMouseButton(1))
+        if (item.Use())
         {
-            if(item.Use())
+            if (item.quantity == 1)
             {
                 RemoveItem();
-                HoverBox.instance.HideDescription();
             }
-        }
-        else
-        {
-            Inventory.instance.StartItemDrag(this);
-            RemoveItem();
+            else
+            {
+                item.quantity -= 1;
+                Inventory.instance.PopulateInventory(Inventory.instance.GetInventoryItems());
+            }
+            HoverBox.instance.HideDescription();
         }
     }
 
@@ -84,17 +86,15 @@ public class ItemTile : MonoBehaviour {
             HoverBox.instance.HideDescription();
         }
     }
-*/
 
-/*
     public void Highlight()
     {
-        background.color = Color.white;
+        background.color = new Color(0.05f, 0.05f, 0.05f);
     }
 
     public void Unhighlight()
     {
         background.color = origColor;
     }
-*/
+
 }

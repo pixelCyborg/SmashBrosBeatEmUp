@@ -103,6 +103,7 @@ public class Enemy : MonoBehaviour {
             yield return new WaitForSeconds(0.1f);
             if (takingDamage && !dead) sprite.color = sprite.color == origColor ? Color.grey : origColor;
         }
+        body.velocity = Vector2.zero;
         moveDisabled = false;
         if (takingDamage && !dead) sprite.color = origColor;
     }

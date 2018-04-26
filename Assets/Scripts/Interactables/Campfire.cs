@@ -14,7 +14,7 @@ public class Campfire : Interactable {
     //Return to town
     internal override void OnInteract()
     {
-        InteractionSelector.Deselect();
+        InteractionSelector.Deselect(transform);
 
         LightingManager.instance.ToggleDarkness(false);
         SceneManager.LoadScene("Hub", LoadSceneMode.Additive);

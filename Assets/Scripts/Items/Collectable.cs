@@ -3,11 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Collectable : Interactable {
-    private static Player player;
+    private static Transform target;
     public Item item = new Item();
+    Rigidbody2D body;
+
+    const int TIMEOUT = 10;
+    const float VACUUM_RADIUS = 10.0f;
+    const float moveSpeed = 10.0f;
+
+    bool vacuumed = false;
+    bool tangible = false;
 
     void Start()
     {
+        StartCoroutine(TimeOut());
+        body = GetComponent<Rigidbody2D>();
         if (gameObject.name.Contains("(Clone)")) gameObject.name = gameObject.name.Substring(0, gameObject.name.Length - 7);
 
         if (item.properties == null)
@@ -27,7 +37,7 @@ public class Collectable : Interactable {
             item.description = "";
             for (int i = 0; i < item.properties.Count; i++)
             {
-                item.description += "-" + item.properties[i].type + " " + item.properties[i].power + "\n";
+                item.description += item.properties[i].type + " " + item.properties[i].power + "\n";
             }
         }
 
@@ -38,19 +48,38 @@ public class Collectable : Interactable {
 
         description = item.itemName;
 
-        if (player == null)
+        if (target == null)
         {
-            player = FindObjectOfType<Player>();
+            target = FindObjectOfType<Player>().transform;
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    IEnumerator TimeOut()
     {
-        if (this.enabled)
+        yield return new WaitForSeconds(0.5f);
+        tangible = true;
+        GetComponent<Collider2D>().isTrigger = true;
+        yield return new WaitForSeconds(TIMEOUT);
+        Destroy(gameObject);
+    }
+
+    private void Update()
+    {
+        if (tangible)
         {
-            if (player != null && collision.tag == "Player")
+            Vector2 velocity = target.position - transform.position;
+            body.velocity = velocity.normalized *
+                (moveSpeed + (VACUUM_RADIUS -
+                (Mathf.Clamp(Vector2.Distance(transform.position, target.position), 0, VACUUM_RADIUS - 1))
+            ) * 0.5f);
+
+            if (Vector2.Distance(target.position, transform.position) < 0.3f)
             {
-                player.PickUp(this);
+                if (target != null)
+                {
+                    target.GetComponent<Player>().PickUp(this);
+                    Destroy(gameObject);
+                }
             }
         }
     }

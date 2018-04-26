@@ -52,7 +52,7 @@ public class Door : Interactable {
             OnOpen();
         }
 
-        InteractionSelector.Deselect();
+        InteractionSelector.Deselect(transform);
 		SceneManager.LoadScene (targetScene, LoadSceneMode.Additive);
         SceneManager.UnloadSceneAsync (gameObject.scene);
 	}

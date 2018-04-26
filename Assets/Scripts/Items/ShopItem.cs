@@ -48,7 +48,7 @@ public class ShopItem : Interactable {
         {
             Inventory.AddCoin(-item.value);
             Inventory.instance.AddToInventory(item);
-            InteractionSelector.Deselect();
+            InteractionSelector.Deselect(transform);
             Destroy(collectable);
             interactable = false;
         }

@@ -30,7 +30,7 @@ public class Interactable : MonoBehaviour {
         if(collision.transform.tag == "Player")
         {
             selected = false;
-            InteractionSelector.Deselect();
+            InteractionSelector.Deselect(transform);
             OnDeselect();
         }
     }

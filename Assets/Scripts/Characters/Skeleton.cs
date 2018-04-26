@@ -43,7 +43,7 @@ public class Skeleton : Enemy {
             CapsuleCollider2D col = (CapsuleCollider2D)bodyCol;
 
             Vector3 wallCheckPos = transform.position + (transform.right * col.size.x * 0.75f * transform.localScale.x);
-            Vector3 cliffCheckPos = transform.position + (transform.right * col.size.x * 0.75f * transform.localScale.x) - (Vector3.up * col.size.y * 0.75f);
+            Vector3 cliffCheckPos = transform.position + (transform.right * col.size.x * 0.75f * transform.localScale.x) - (Vector3.up * col.size.y * 0.6f);
 
             Debug.DrawLine(transform.position, wallCheckPos);
             Debug.DrawLine(transform.position, cliffCheckPos);

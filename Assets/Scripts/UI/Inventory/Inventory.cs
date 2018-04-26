@@ -48,9 +48,9 @@ public class Inventory : MonoBehaviour {
         ToggleOff();
     }
 
-	// Update is called once per frame
-	void Update () {
-        if(Input.GetKeyUp(KeyCode.E))
+    // Update is called once per frame
+    void Update() {
+        if (Input.GetKeyUp(KeyCode.E))
         {
             Toggle();
         }
@@ -65,7 +65,7 @@ public class Inventory : MonoBehaviour {
             }
         }
 
-        if(draggedItem != null)
+        if (draggedItem != null)
         {
             Vector2 pos;
             RectTransformUtility.ScreenPointToLocalPointInRectangle(myCanvas.transform as RectTransform, Input.mousePosition, myCanvas.worldCamera, out pos);
@@ -76,7 +76,7 @@ public class Inventory : MonoBehaviour {
                 EndItemDrag();
             }
         }
-	}
+    }
 
     public void Toggle(bool expanded = false)
     {
@@ -117,7 +117,7 @@ public class Inventory : MonoBehaviour {
 
     public ItemTile FirstAvailableTile(Item item)
     {
-        for(int i = 0; i < inventoryTiles.Length; i++)
+        for (int i = 0; i < inventoryTiles.Length; i++)
         {
             if (inventoryTiles[i].item == null) return inventoryTiles[i];
         }
@@ -128,22 +128,22 @@ public class Inventory : MonoBehaviour {
     public void StartItemDrag(ItemTile itemTile)
     {
         origTile = itemTile;
-		StartItemDrag (itemTile.item);
+        StartItemDrag(itemTile.item);
     }
 
-	public void StartItemDrag(Item _item) {
+    public void StartItemDrag(Item _item) {
         if (_item == null) return;
-		HoverBox.instance.gameObject.SetActive(false);
-		itemCursor.enabled = true;
-		draggedItem = _item;
-		itemCursor.sprite = draggedItem.sprite;
-	}
+        HoverBox.instance.gameObject.SetActive(false);
+        itemCursor.enabled = true;
+        draggedItem = _item;
+        itemCursor.sprite = draggedItem.sprite;
+    }
 
     void EndItemDrag()
     {
-        if(hoveredTile != null)
+        if (hoveredTile != null)
         {
-            if(hoveredTile.item != null)
+            if (hoveredTile.item != null)
             {
                 origTile.SetItem(hoveredTile.item);
 
@@ -151,15 +151,15 @@ public class Inventory : MonoBehaviour {
                 hoveredTile.SetItem(draggedItem);
 
                 HoverBox.instance.ShowDescription(draggedItem);
-            } 
+            }
             else hoveredTile.SetItem(draggedItem);
         }
-        else if(Cauldron.instance.isHovering)
+        else if (Cauldron.instance.isHovering)
         {
-			HoverBox.instance.HideDescription ();
+            HoverBox.instance.HideDescription();
             Cauldron.instance.AddItemToBrew(draggedItem);
         }
-        else if(origTile != null)
+        else if (origTile != null)
         {
             origTile.SetItem(draggedItem);
         }
@@ -167,8 +167,8 @@ public class Inventory : MonoBehaviour {
         itemCursor.enabled = false;
         draggedItem = null;
         origTile = null;
-        HoverBox.instance.gameObject.SetActive(true);
-        HoverBox.instance.UpdateBoxPos();
+        //HoverBox.instance.gameObject.SetActive(true);
+        //HoverBox.instance.UpdateBoxPos();
     }
 
     public void ToggleOn(bool expanded) {
@@ -187,13 +187,8 @@ public class Inventory : MonoBehaviour {
         open = false;
     }
 
-	public Item[] GetInventoryItems() {
-		Item[] items = new Item[inventoryTiles.Length];
-		for (int i = 0; i < items.Length; i++) {
-			items [i] = inventoryTiles [i].item;
-		}
-
-		return items;
+    public Item[] GetInventoryItems() {
+		return heldItems.ToArray();
 	}
 
 	public void PopulateInventory(Item[] inventoryItems) {

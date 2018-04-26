@@ -5,50 +5,35 @@ using UnityEngine.UI;
 
 public class HoverBox : MonoBehaviour {
     public static HoverBox instance;
-    RectTransform rect;
-    bool shown;
-    Canvas myCanvas;
-    CanvasGroup group;
-    
+
+    private Sprite origSprite;
+    public Image itemIcon;
     public Text itemName;
     public Text itemDescription;
+    public Text quantity;
 
     void Start()
     {
-        rect = GetComponent<RectTransform>();
         instance = this;
-        myCanvas = GetComponentInParent<Canvas>();
-        group = GetComponent<CanvasGroup>();
-        group.alpha = 0;
-        group.interactable = false;
-        group.blocksRaycasts = true;
+        origSprite = itemIcon.sprite;
+        HideDescription();
     }
 
-    void Update()
-    {
-        if(group.alpha == 1)
-        {
-            UpdateBoxPos();
-        }
-    }
-
-    public void UpdateBoxPos()
-    {
-        Vector2 pos;
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(myCanvas.transform as RectTransform, Input.mousePosition, myCanvas.worldCamera, out pos);
-        transform.position = myCanvas.transform.TransformPoint(pos) - new Vector3(rect.rect.width / 2, -rect.rect.height / 2, 0) * myCanvas.transform.localScale.x;
-    }
-	
     public void ShowDescription(Item item)
     {
+        itemIcon.sprite = item.sprite;
         itemName.text = item.itemName;
         itemDescription.text = item.description;
-
-        group.alpha = 1;
+        quantity.text = item.quantity.ToString();
+        itemIcon.enabled = true;
     }
 
     public void HideDescription()
     {
-        group.alpha = 0;
+        itemIcon.sprite = origSprite;
+        itemName.text = "";
+        itemDescription.text = "";
+        quantity.text = "";
+        itemIcon.enabled = false;
     }
 }
