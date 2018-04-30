@@ -1,8 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
-public class Town : LocationBase {
+public class Town : LocationBase, IPointerDownHandler
+{
     public string townName;
     public string kingdom;
     public int population;
@@ -16,6 +19,15 @@ public class Town : LocationBase {
     private void OnEnable()
     {
         gameObject.name = townName;
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        for(int i = 0; i < SceneManager.sceneCount; i++)
+        {
+            SceneManager.UnloadSceneAsync(SceneManager.GetSceneAt(i));
+        }
+        SceneManager.LoadScene("Town", LoadSceneMode.Additive);
     }
 
     internal override string GetDescription()
