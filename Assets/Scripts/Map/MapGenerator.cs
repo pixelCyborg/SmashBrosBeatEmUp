@@ -700,11 +700,13 @@ public class MapGenerator : MonoBehaviour {
                     {
                         map[x, y - 1] = 0;
                         map[x, y - 2] = 0;
+                        map[x, y - 3] = 0;
                     }
                     if(IsInMapRange(x, y - 1) && map[x, y - 1] == 1)
                     {
                         map[x, y + 1] = 0;
                         map[x, y + 2] = 0;
+                        map[x, y + 3] = 0;
                     }
                 }
             }

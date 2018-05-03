@@ -26,6 +26,15 @@ public class Door : Interactable {
         base.OnInteract();
         if(Physics2D.IsTouching(doorCol, playerCol))
         {
+            try
+            {
+                GetComponent<AudioSource>().Play();
+            }
+            catch(System.Exception e)
+            {
+                Debug.Log(e.Message);
+            }
+
             Enter();
         } 
     }

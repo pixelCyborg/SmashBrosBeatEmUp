@@ -16,7 +16,8 @@ public class LocationBase : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 		if (!interactable)
 			return;
 
-		selected = true;
+        CanvasManager.instance.audioHandler.PlayMapHover();
+        selected = true;
 		MapSelector.Select (transform, GetLabels(), GetDescription());
 	}
 

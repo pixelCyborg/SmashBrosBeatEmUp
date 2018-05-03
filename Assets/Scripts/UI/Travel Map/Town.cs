@@ -25,8 +25,13 @@ public class Town : LocationBase, IPointerDownHandler
     {
         for(int i = 0; i < SceneManager.sceneCount; i++)
         {
-            SceneManager.UnloadSceneAsync(SceneManager.GetSceneAt(i));
+            if (SceneManager.GetSceneAt(i).name != "Player")
+            {
+                SceneManager.UnloadSceneAsync(SceneManager.GetSceneAt(i));
+            }
         }
+
+        CanvasManager.instance.audioHandler.PlayMapSelect();
         SceneManager.LoadScene("Town", LoadSceneMode.Additive);
     }
 

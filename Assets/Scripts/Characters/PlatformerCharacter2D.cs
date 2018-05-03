@@ -58,13 +58,29 @@ public class PlatformerCharacter2D : MonoBehaviour
             for (int i = 0; i < colliders.Length; i++)
             {
                 if (colliders[i].gameObject != gameObject && !colliders[i].isTrigger)
+                {
                     m_Grounded = true;
+                }
             }
             //m_Anim.SetBool("Ground", m_Grounded);
 
             // Set the vertical animation
             //m_Anim.SetFloat("vSpeed", m_Rigidbody2D.velocity.y);
         }
+    }
+
+    bool prevGrounded = true;
+    bool hasJumped = false;
+
+    private void Update()
+    {
+        if (hasJumped && !prevGrounded && m_Grounded && Player.instance.body.velocity.y < 1f)
+        {
+            Player.instance.audioHandler.PlayImpact();
+            hasJumped = false;
+        }
+
+        prevGrounded = m_Grounded;
     }
 
     public void StartClimbing()
@@ -111,6 +127,7 @@ public class PlatformerCharacter2D : MonoBehaviour
             // Reduce the speed if crouching by the crouchSpeed multiplier
             move = (crouch ? move * m_CrouchSpeed : move);
             // Move the character
+            if(m_Grounded) Player.instance.audioHandler.PlayFootstep(transform.position);
             m_Rigidbody2D.velocity = new Vector2(move * m_MaxSpeed, m_Rigidbody2D.velocity.y);
 
             // If the input is moving the player right and the player is facing left...
@@ -130,6 +147,7 @@ public class PlatformerCharacter2D : MonoBehaviour
         // If the player should jump...
         if ((m_Grounded || isClimbing) && jump)
         {
+            hasJumped = true;
             canDash = true;
             if (isClimbing)
             {
@@ -146,6 +164,7 @@ public class PlatformerCharacter2D : MonoBehaviour
             }
             else
             {
+                Player.instance.audioHandler.PlayJump();
                 Vector2 tempVel = m_Rigidbody2D.velocity;
                 tempVel.y = 0;
                 m_Rigidbody2D.velocity = tempVel;

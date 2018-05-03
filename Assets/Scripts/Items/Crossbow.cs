@@ -13,12 +13,14 @@ public class Crossbow : MonoBehaviour {
     public float reloadTime = 0.5f;
     public float boltSpeed = 1.0f;
     public List<Property> properties;
+    public WeaponAudioHandler audioHandler;
 
     private void Start()
     {
         origin = GetComponentInParent<Player>().transform;
         instance = this;
         properties = new List<Property>();
+        audioHandler.Initialize(GetComponent<AudioSource>());
     }
 
     void GetUpgrades()
@@ -35,7 +37,7 @@ public class Crossbow : MonoBehaviour {
     {
         if (CanShoot && !Inventory.open && !TravelMap.mapShown)
         {
-  
+            audioHandler.PlayShoot();
             Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector2 direction = (mouseWorldPos - transform.position);
             direction = direction.normalized * boltSpeed;

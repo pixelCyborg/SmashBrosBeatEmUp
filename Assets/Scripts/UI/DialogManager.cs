@@ -10,8 +10,12 @@ public class DialogManager : MonoBehaviour {
     private CanvasGroup group;
     private Vector3 bubblePos;
 
+    public DialogAudioHandler audioHandler;
+    public float textWriteDelay = 0.1f;
+
 	// Use this for initialization
 	void Start () {
+        audioHandler.Initialize(GetComponent<AudioSource>());
         instance = this;
         group = GetComponent<CanvasGroup>();
         HideDialog();
@@ -27,11 +31,22 @@ public class DialogManager : MonoBehaviour {
 
     public void SetDialog(Dialog newLog)
     {
-        dialogText.text = newLog.dialogString;
         bubblePos = (newLog.transform.position + Vector3.up * newLog.rend.bounds.extents.y * 1.5f);
         group.alpha = 1;
         group.interactable = true;
         group.blocksRaycasts = true;
+        StartCoroutine(WriteDialog(newLog));
+    }
+
+    IEnumerator WriteDialog(Dialog newLog)
+    {
+        dialogText.text = "";
+        while(dialogText.text != newLog.dialogString)
+        {
+            audioHandler.PlayDialog();
+            dialogText.text = newLog.dialogString.Substring(0, dialogText.text.Length + 1);
+            yield return new WaitForSeconds(textWriteDelay);
+        }
         StartCoroutine(DialogTimeout(newLog.dialogTime));
     }
 
@@ -43,6 +58,8 @@ public class DialogManager : MonoBehaviour {
 
     public void HideDialog()
     {
+        if (group.alpha == 0) return;
+        audioHandler.PlayCloseDialog();
         group.alpha = 0;
         group.interactable = false;
         group.blocksRaycasts = false;

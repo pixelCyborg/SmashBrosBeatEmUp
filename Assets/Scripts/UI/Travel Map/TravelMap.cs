@@ -33,7 +33,10 @@ public class TravelMap : MonoBehaviour {
 		mapShown = true;
         instance = this;
 
-		Toggle ();
+        mapShown = false;
+        groupComponent.alpha = 0;
+        groupComponent.interactable = false;
+        groupComponent.blocksRaycasts = false;
 
         towns = new List<Town>();
         contracts = new List<Contract>();
@@ -47,12 +50,14 @@ public class TravelMap : MonoBehaviour {
 
 	public void Toggle() {
 		if (mapShown) {
+            CanvasManager.instance.audioHandler.PlayHideScreen();
 			mapShown = false;
 			groupComponent.alpha = 0;
 			groupComponent.interactable = false;
 			groupComponent.blocksRaycasts = false;
 		} else {
-			mapShown = true;
+            CanvasManager.instance.audioHandler.PlayShowScreen();
+            mapShown = true;
 			groupComponent.alpha = 1;
 			groupComponent.interactable = true;
 			groupComponent.blocksRaycasts = true;

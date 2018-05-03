@@ -16,7 +16,12 @@ public class Dialog : Interactable {
     internal override void OnInteract()
     {
         base.OnInteract();
-        Debug.Log(dialogString);
         DialogManager.instance.SetDialog(this);
+    }
+
+    internal override void OnDeselect()
+    {
+        base.OnDeselect();
+        DialogManager.instance.HideDialog();
     }
 }

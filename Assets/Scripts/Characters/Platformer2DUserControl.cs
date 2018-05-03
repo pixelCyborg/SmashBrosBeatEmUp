@@ -30,7 +30,7 @@ public class Platformer2DUserControl : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (Inventory.open)
+        if (Inventory.open || Player.dead)
         {
             m_Character.Move(0, 0, false, false, false);
             return;

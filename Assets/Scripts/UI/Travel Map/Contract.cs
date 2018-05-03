@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 public class Contract : LocationBase, IPointerDownHandler {
     public string targetName;
@@ -34,7 +35,16 @@ public class Contract : LocationBase, IPointerDownHandler {
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        Debug.Log("Starting mission!");
+        for (int i = 0; i < SceneManager.sceneCount; i++)
+        {
+            if (SceneManager.GetSceneAt(i).name != "Player")
+            {
+                SceneManager.UnloadSceneAsync(SceneManager.GetSceneAt(i));
+            }
+        }
+        SceneManager.LoadScene("Hub", LoadSceneMode.Additive);
+
+        CanvasManager.instance.audioHandler.PlayMapSelect();
         MissionManager.instance.StartMission(this);
     }
 

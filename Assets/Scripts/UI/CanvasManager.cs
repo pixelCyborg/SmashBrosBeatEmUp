@@ -9,9 +9,11 @@ public class CanvasManager : MonoBehaviour {
     public static CanvasManager instance;
     public GameObject gameOverScreen;
     public GameObject pauseScreen;
+    public UiAudioHandler audioHandler;
 
     private void Start()
     {
+        audioHandler.Initialize(GetComponent<AudioSource>());
         instance = this;
         instance.gameOverScreen.SetActive(false);
     }
@@ -20,12 +22,15 @@ public class CanvasManager : MonoBehaviour {
     {
         if(Input.GetKeyDown(KeyCode.Escape) && !Inventory.open)
         {
+            if (pauseScreen.activeSelf) audioHandler.PlayHideScreen();
+            else audioHandler.PlayShowScreen();
             pauseScreen.SetActive(!pauseScreen.activeSelf);
         }
     }
 
     public static void ShowGameOver()
     {
+        instance.audioHandler.PlayShowScreen();
         instance.gameOverScreen.SetActive(true);
     }
 

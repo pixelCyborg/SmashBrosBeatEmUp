@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class InteractionSelector : MonoBehaviour
 {
@@ -12,20 +13,31 @@ public class InteractionSelector : MonoBehaviour
     private static SpriteGlow.SpriteGlow glow;
     private static Sprite origSprite;
     private static TextMesh interactionText;
+    private static InteractionSelector instance;
 
     public Transform[] _targetQueue;
+    public InteractionAudioHandler audioHandler;
 
     private void Start()
     {
+        instance = this;
+        audioHandler.Initialize(GetComponent<AudioSource>());
         targetQueue = new List<Transform>();
         rend = GetComponent<SpriteRenderer>();
         glow = GetComponent<SpriteGlow.SpriteGlow>();
         interactionText = GetComponentInChildren<TextMesh>();
         origSprite = rend.sprite;
+        SceneManager.sceneLoaded += OnSceneLoad;
+    }
+
+    void OnSceneLoad(Scene scene, LoadSceneMode mode)
+    {
+
     }
 
 public static void Select(Transform newTarget, string text = "")
     {
+        instance.audioHandler.PlaySelect();
         target = newTarget;
         targetQueue.Add(target);
         targetSprite = target.GetComponent<SpriteRenderer>();
@@ -43,26 +55,33 @@ public static void Select(Transform newTarget, string text = "")
     {
         if(_target != null && targetQueue.Count > 0)
         {
-            if(target.GetInstanceID() == _target.GetInstanceID())
+            try
             {
-                if (targetQueue.Count <= 1)
+                if (target.GetInstanceID() == _target.GetInstanceID())
                 {
-                    targetQueue.RemoveAt(0);
-                    Deselect();
+                    if (targetQueue.Count <= 1)
+                    {
+                        targetQueue.RemoveAt(0);
+                        Deselect();
+                    }
+                    else
+                    {
+                        targetQueue.RemoveAt(targetQueue.Count - 1);
+                        Select(targetQueue[targetQueue.Count - 1], targetQueue[targetQueue.Count - 1].GetComponent<Interactable>().description);
+                    }
                 }
                 else
                 {
-                    targetQueue.RemoveAt(targetQueue.Count - 1);
-                    Select(targetQueue[targetQueue.Count - 1], targetQueue[targetQueue.Count - 1].GetComponent<Interactable>().description);
+                    for (int i = 0; i < targetQueue.Count; i++)
+                    {
+                        if (_target.GetInstanceID() == targetQueue[i].GetInstanceID()) targetQueue.RemoveAt(i);
+                        return;
+                    }
+                    Deselect();
                 }
             }
-            else
+            catch(System.Exception e)
             {
-                for(int i = 0; i < targetQueue.Count; i++)
-                {
-                    if (_target.GetInstanceID() == targetQueue[i].GetInstanceID()) targetQueue.RemoveAt(i);
-                    return;
-                }
                 Deselect();
             }
         }
@@ -74,6 +93,7 @@ public static void Select(Transform newTarget, string text = "")
 
     private static void Deselect()
     {
+        instance.audioHandler.PlayDeselect();
         target = null;
         targetSprite = null;
         rend.sprite = origSprite;

@@ -53,6 +53,7 @@ public class ItemTile : MonoBehaviour {
     {
         if (item.Use())
         {
+            CanvasManager.instance.audioHandler.PlayInventoryUse();
             if (item.quantity == 1)
             {
                 RemoveItem();
@@ -73,6 +74,7 @@ public class ItemTile : MonoBehaviour {
 
         if (item != null)
         {
+            CanvasManager.instance.audioHandler.PlayInventoryHover();
             HoverBox.instance.ShowDescription(item);
         }
     }

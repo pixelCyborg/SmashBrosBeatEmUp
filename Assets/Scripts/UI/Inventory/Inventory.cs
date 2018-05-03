@@ -172,6 +172,7 @@ public class Inventory : MonoBehaviour {
     }
 
     public void ToggleOn(bool expanded) {
+        CanvasManager.instance.audioHandler.PlayShowScreen();
         group.alpha = 1;
         group.interactable = true;
         group.blocksRaycasts = true;
@@ -181,6 +182,7 @@ public class Inventory : MonoBehaviour {
 
     public void ToggleOff()
     {
+        CanvasManager.instance.audioHandler.PlayHideScreen();
         group.alpha = 0;
         group.interactable = false;
         group.blocksRaycasts = false;
