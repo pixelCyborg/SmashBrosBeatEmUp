@@ -7,10 +7,10 @@ public class PhilosopherStone : Boss {
     List<ProjectileModule> modules = new List<ProjectileModule>();
     Vector3 currentDir;
     private float speed = 5.0f;
+    public float projectileCycleTime = 2.0f;
 
-    new private void Start()
+    internal override void OnInitialize()
     {
-        base.Start();
         currentDir = new Vector2(1, 1);
         modules.Add(GetComponent<ProjectileModule>());
         StartCoroutine(FireCycle());
@@ -21,9 +21,18 @@ public class PhilosopherStone : Boss {
         while(health > 0)
         {
             modules[0].ShootHalo();
-            yield return new WaitForSeconds(0.5f);
-            modules[0].SpawnHalo();
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(projectileCycleTime / 2.0f);
+            modules[0].SpawnHalo(0.5f);
+            yield return new WaitForSeconds(projectileCycleTime / 2.0f);
+        }
+    }
+
+    internal override void OnDie()
+    {
+        base.OnDie();
+        foreach(ProjectileModule module in modules)
+        {
+            module.ClearHalo();
         }
     }
 

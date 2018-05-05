@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -10,6 +11,7 @@ public class ProjectileModule : MonoBehaviour {
     public float projectileSpeed = 5.0f;
     public int projectileCount = 1;
     public float currentRotation = 0;
+    private float origScale;
     public float currentScale = 5;
     public float rotationSpeed = 2;
     public float projectileSize;
@@ -19,7 +21,7 @@ public class ProjectileModule : MonoBehaviour {
 
     private void Start()
     {
-        SpawnHalo();
+        origScale = currentScale;
     }
 
     private void Update()
@@ -62,7 +64,7 @@ public class ProjectileModule : MonoBehaviour {
         projectiles = new List<Projectile>();
     }
 
-    void ClearHalo()
+    public void ClearHalo()
     {
         if (projectiles.Count > 0)
         {
@@ -78,14 +80,18 @@ public class ProjectileModule : MonoBehaviour {
         projectiles = new List<Projectile>();
     }
 
-    public void SpawnHalo()
+    public void SpawnHalo(float lerpTime = 0.0f)
     {
         ClearHalo();
+
+        if(lerpTime > 0.0f) currentScale = 0.0f;
 
         for (int i = 0; i < projectileCount; i++)
         {
             SpawnProjectile();
         }
+
+        DOTween.To(() => currentScale, x => currentScale = x, origScale, lerpTime);
 
         UpdateOrbit();
     }

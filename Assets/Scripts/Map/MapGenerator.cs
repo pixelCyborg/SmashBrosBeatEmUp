@@ -173,25 +173,40 @@ public class MapGenerator : MonoBehaviour {
         map = new int[width, height];
 
         ClearMap();
+
+        Debug.Log("Filling the map");
         RandomFillMap();
 
+        Debug.Log("Smoothing the map");
         for (int i = 0; i < smoothIterations; i++)
         {
             SmoothMap();
         }
+
+        Debug.Log("Processing Map");
+        ProcessMap();
+        Debug.Log("Adding Map Access");
         CheckMapAccess();
 
-        ProcessMap();
+        Debug.Log("Finding Ladders");
         FindLadders();
+
+        Debug.Log("Finding Platforms");
         FindPlatforms();
 
+        Debug.Log("Placing Player");
         PlacePlayerAtStart();
+        Debug.Log("Placing Enemies");
         PlaceEnemies();
+        Debug.Log("Placing Chests");
         PlaceChests();
+        Debug.Log("Placing Decorations");
         PlaceDecorations();
 
+        Debug.Log("Painting the map");
         PaintMapTiles();
 
+        Debug.Log("Placing exit");
         PlaceDoorAtExit();
     }
 
@@ -502,7 +517,11 @@ public class MapGenerator : MonoBehaviour {
         Coord exitPoint = BestExitPoint();
         GameObject door = (GameObject)Instantiate(doorObject, CoordToWorldPoint(exitPoint) - Vector3.up * 0.6f, Quaternion.identity, interactableParent);
         door.GetComponent<Door>().targetScene = "Camp";
-        door.GetComponent<Door>().OnOpen = MissionManager.instance.NextFloor;
+
+        if (MissionManager.instance != null)
+        {
+            door.GetComponent<Door>().OnOpen = MissionManager.instance.NextFloor;
+        }
     }
 
     private void FindLadders()
@@ -690,23 +709,33 @@ public class MapGenerator : MonoBehaviour {
 
     void CheckMapAccess()
     {
-        for (int x = 0; x < width; x++)
+        foreach(Room room in rooms)
         {
-            for (int y = 0; y < height; y++)
+            foreach (Coord edgeTile in room.edgeTiles)
             {
-                if(map[x,y] == 0)
+
+                if (IsInMapRange(edgeTile.x, edgeTile.y + 1) && map[edgeTile.x, edgeTile.y + 1] == 1)
                 {
-                    if(IsInMapRange(x, y + 1) && map[x,y + 1] == 1)
+                    for(int x = 1; x <= 3; x++)
                     {
-                        map[x, y - 1] = 0;
-                        map[x, y - 2] = 0;
-                        map[x, y - 3] = 0;
+                        for(int y = 1; y <= 3; y++)
+                        {
+                            int xPos = edgeTile.x + x - 2;
+                            int yPos = edgeTile.y - y;
+                            if(IsInMapRange(xPos, yPos)) map[xPos, yPos] = 0;
+                        }
                     }
-                    if(IsInMapRange(x, y - 1) && map[x, y - 1] == 1)
+                }
+                if (IsInMapRange(edgeTile.x, edgeTile.y - 1) && map[edgeTile.x, edgeTile.y - 1] == 1)
+                {
+                    for (int x = 1; x <= 3; x++)
                     {
-                        map[x, y + 1] = 0;
-                        map[x, y + 2] = 0;
-                        map[x, y + 3] = 0;
+                        for (int y = 1; y <= 3; y++)
+                        {
+                            int xPos = edgeTile.x + x - 2;
+                            int yPos = edgeTile.y + y;
+                            if (IsInMapRange(xPos, yPos)) map[xPos, yPos] = 0;
+                        }
                     }
                 }
             }

@@ -36,6 +36,11 @@ public class Player : MonoBehaviour {
     public Healthbar healthbar;
     public CharacterAudioHandler audioHandler;
 
+    //Animators
+    public Animator headAnim;
+    public Animator armAnim;
+    public Animator bodyAnim;
+
     private void Awake()
     {
         dead = false;

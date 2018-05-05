@@ -15,12 +15,24 @@ public class Crossbow : MonoBehaviour {
     public List<Property> properties;
     public WeaponAudioHandler audioHandler;
 
+    public float angle;
+
     private void Start()
     {
         origin = GetComponentInParent<Player>().transform;
         instance = this;
         properties = new List<Property>();
         audioHandler.Initialize(GetComponent<AudioSource>());
+    }
+
+    private void Update()
+    {
+        Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 direction = (mouseWorldPos - transform.position);
+        direction = direction.normalized;
+        angle = Vector2.Angle(Vector2.right * transform.parent.localScale.x, direction);
+        if (direction.y < 0) angle = -angle;
+        Player.instance.armAnim.SetFloat("aimAngle", angle);
     }
 
     void GetUpgrades()
@@ -35,7 +47,7 @@ public class Crossbow : MonoBehaviour {
 
     public void FireCrossbow()
     {
-        if (CanShoot && !Inventory.open && !TravelMap.mapShown)
+        if (CanShoot && !Inventory.open && !TravelMap.mapShown && !Player.dead)
         {
             audioHandler.PlayShoot();
             Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);

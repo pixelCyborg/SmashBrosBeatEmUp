@@ -88,7 +88,6 @@ public class CharacterAudioHandler : AudioHandler
 
     public void PlayImpact()
     {
-        Debug.Log("Impact");
         PlaySound(impact);
     }
 

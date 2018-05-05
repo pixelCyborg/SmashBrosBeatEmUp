@@ -4,36 +4,67 @@ using UnityEngine;
 
 public class Boss : MonoBehaviour
 {
+
     public int health;
     public int damage = 1;
 
+    private Animator anim;
     private SpriteRenderer sprite;
     private Color origColor;
     private bool invuln = false;
+    private bool initialized = false;
 
     private float recoveryTime = 0.5f;
     public float[] phasePercentages;
     public HealthbarFill healthbar;
-    private GameObject campfire;
+    private GameObject portal;
 
     private int phase;
 
+    internal virtual void OnInitialize() { }
     internal virtual void Move() { }
     internal virtual void Attack() { }
     internal virtual void OnDie() { }
 
     internal void Start()
     {
+        StartCoroutine(PlayBossIntro());
+        anim = GetComponent<Animator>();
+        portal = FindObjectOfType<BossPortal>().gameObject;
+        portal.SetActive(false);
+    }
+
+    internal void Initialize()
+    {
         if (healthbar != null) healthbar.Initialize(health);
         sprite = GetComponent<SpriteRenderer>();
         origColor = sprite.color;
-        campfire = FindObjectOfType<Campfire>().gameObject;
-        campfire.SetActive(false);
+        initialized = true;
+        OnInitialize();
+    }
 
+    IEnumerator PlayBossIntro()
+    {
+        CameraFollow.Focus(transform);
+        yield return new WaitForSeconds(1.0f);
+        anim.SetTrigger("intro");
+    }
+
+    public void FinishBossIntro()
+    {
+        CameraFollow.Unfocus();
+        StartCoroutine(_FinishBossIntro());
+    }
+
+    IEnumerator _FinishBossIntro()
+    {
+        yield return new WaitForSeconds(1.0f);
+        Initialize();
     }
 
     internal void Update()
     {
+        if (!initialized) return;
         Move();
     }
 
@@ -82,7 +113,7 @@ public class Boss : MonoBehaviour
         Destroy(gameObject);
         MissionManager.instance.objectiveComplete = true;
         MissionManager.instance.CompleteMission();
-        campfire.SetActive(true);
+        portal.SetActive(true);
     }
 
     public void OnCollisionEnter2D(Collision2D collision)

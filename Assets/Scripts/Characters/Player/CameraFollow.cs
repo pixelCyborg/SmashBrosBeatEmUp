@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraFollow : MonoBehaviour {
+    private static bool following = true;
 	public float speed = 4.0f;
     public float zoomSpeed = 2.0f;
     public float maxZoom = 10.0f;
@@ -29,6 +30,17 @@ public class CameraFollow : MonoBehaviour {
         defaultTarget = target;
 	}
 	
+    public static void Focus(Transform _target)
+    {
+        following = false;
+        target = _target;
+    }
+
+    public static void Unfocus()
+    {
+        target = defaultTarget;
+    }
+
     public static void FocusRoom(BoxCollider2D col)
     {
         if (col == null) return;
@@ -77,10 +89,17 @@ public class CameraFollow : MonoBehaviour {
             return;
         }
 
+        if(!following) {
+            transform.position = Vector3.Lerp(transform.position, target.position + offset, Time.deltaTime * speed);
+            if (target.gameObject == defaultTarget.gameObject && Vector3.Distance(transform.position, target.position) < 0.1f) following = true;
+            return;
+        }
+
         Vector3 reticlePos = cam.ScreenToWorldPoint(Input.mousePosition);
         reticlePos.z = 0;
 
-        transform.position = Vector3.Lerp (transform.position, (target.position + defaultTarget.position + reticlePos * 0.5f)/2.5f + offset, Time.deltaTime * speed);
+        //transform.position = Vector3.Lerp (transform.position, (target.position + defaultTarget.position + reticlePos * 0.5f)/2.5f + offset, Time.deltaTime * speed);
+        transform.position = (target.position + defaultTarget.position + reticlePos * 0.5f)/ 2.5f + offset;
         cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, targetZoom, Time.deltaTime * zoomSpeed);
 	}
 }

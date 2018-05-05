@@ -59,6 +59,7 @@ public class DialogManager : MonoBehaviour {
     public void HideDialog()
     {
         if (group.alpha == 0) return;
+        StopCoroutine("WriteDialog");
         audioHandler.PlayCloseDialog();
         group.alpha = 0;
         group.interactable = false;
